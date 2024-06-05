@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <style>-->
+<!--        div{-->
+<!--            border: 1.5px solid #000000;-->
+<!--        }-->
+<!--</style>-->
+</head>
+<body>
+<h1>用户上传数据</h1>
+<!--<div class="row">-->
+<!--        <div class="margin-bottom-60">-->
+<!--            <label for="exampleInputFile">文件上传</label>-->
+<!--            <input type="file" id="exampleInputFile">-->
+<!--        </div>-->
+<!--</div>-->
+
+<form class="navbar-form" method="post" action="/add_datalist">
+    <input type="text" class="form-control" name="address" placeholder="数据拥有者地址">
+    <input type="text" class="form-control" name="kind" placeholder="数据类别">
+    <input type="text" class="form-control" name="unit" placeholder="所属主体">
+    <input type="text" class="form-control"  name="sharing" placeholder="可否共享">
+    <input type="submit" class="form-control" value="提交">
+</form>
+
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/Chart.min.js"></script>
+    <script src="../static/js/templatemo_script.js"></script>
+    <script type="text/javascript"></script>
+</body>
+</html>

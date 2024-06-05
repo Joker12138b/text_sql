@@ -1,0 +1,193 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>delete data</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class = "container">-->
+<!--    <h1>航班计划数据列表</h1>-->
+<!--    <table class="table table-bordered">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>序号</th>-->
+<!--            <th>航司名称</th>-->
+<!--            <th>日期</th>-->
+<!--            <th>计划航班</th>-->
+<!--            <th>执行航班</th>-->
+<!--            <th>取消航班</th>-->
+<!--            <th>取消率</th>-->
+<!--            <th>操作</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--        {% for x in flight_list %}-->
+<!--            <tr>-->
+<!--                <td>{{ x.id}}</td>-->
+<!--                <td>{{ x.airline}}</td>-->
+<!--                <td>{{ x.date}}</td>-->
+<!--                <td>{{ x.flight_plan_number}}</td>-->
+<!--                <td>{{ x.flight_execution_number}}</td>-->
+<!--                <td>{{ x.flight_cancellation_number}}</td>-->
+<!--                <td>{{ x.cancellation_rate}}</td>-->
+<!--                <input type="button" value="删除" class="delete"/>-->
+<!--            </tr>-->
+<!--        {% endfor %}-->
+<!--        </tbody>-->
+<!--    </table>-->
+<!--        <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"-->
+<!--         aria-hidden="true">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" class="close" data-dismiss="modal"><span-->
+<!--                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>-->
+<!--                    <h4 class="modal-title" id="myModalLabel">确定要删除吗?</h4>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <a href="/tables5" class="btn btn-primary">是的</a>-->
+<!--                    <button type="button" class="btn btn-default" data-dismiss="modal">不，我再想想</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--<script>-->
+
+<!--    $(function() {-->
+<!--        //找到所有class=delete的标签，绑定事件-->
+<!--        $(".delete").click(function(){-->
+<!--            //删除当前行的数据-->
+<!--            $(this).parent().parent().remove();-->
+<!--    });-->
+<!--})-->
+<!-- </script>-->
+<!--</body>-->
+<!--</html>-->
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <title>弹出删除框</title>-->
+<!--    <script type="text/javascript">-->
+<!--        function showDeleteBox() {-->
+<!--            var deleteBox = document.getElementById("delete-box"); //获取删除框元素-->
+<!--            deleteBox.style.display = "block"; //显示删除框-->
+<!--        }-->
+
+<!--        function hideDeleteBox() {-->
+<!--            var deleteBox = document.getElementById("delete-box"); //获取删除框元素-->
+<!--            deleteBox.style.display = "none"; //隐藏删除框-->
+<!--        }-->
+<!--    </script>-->
+<!--</head>-->
+<!--<body>-->
+<!--    &lt;!&ndash; 点击按钮时触发showDeleteBox函数 &ndash;&gt;-->
+<!--    <button onclick="showDeleteBox()">打开删除框</button>-->
+
+<!--    &lt;!&ndash; 定义删除框样式并设置初始状态为隐藏 &ndash;&gt;-->
+<!--    <div id="delete-box" style="display: none;">-->
+<!--        <h2>确认删除？</h2>-->
+<!--        <p>这将永久删除该项目，无法恢复。</p>-->
+<!--        <button onclick="hideDeleteBox()">取消</button>-->
+<!--        <button onclick="confirmDeletion()">确认删除</button>-->
+<!--    </div>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jsp_edit</title>
+    <style>
+        .modifydiv,
+        .adddiv,
+        .deletediv {
+            display: none;
+            position: fixed;
+            top: 30%;
+            right: 40%;
+            border-radius: 10px;
+            border: solid;
+            background-color: rgba(78, 122, 242, 0.998);
+            z-index: 0;
+            padding: 20px;
+            color: white;
+            outline: none;
+            transition: all 300ms ease-in-out;
+        }
+
+        .active1,
+        .active3,
+        .active2 {
+            display: block;
+            transition: all 300ms ease-in-out;
+            z-index: 2;
+        }
+
+        input {
+            outline: none;
+        }
+
+        input:hover,
+        input:active {
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        //classList.toggle("active1")功能：选项有active1类名则删除，没有则添加该类名，可以实现切换
+        function togglePopup1() {
+            document.querySelector("#popup1").classList.toggle("active1");
+        }
+        function togglePopup2() {
+            document.querySelector("#popup2").classList.toggle("active2");
+        }
+        function togglePopup3() {
+            document.querySelector("#popup3").classList.toggle("active3");
+        }
+    </script>
+</head>
+
+<body>
+    <input type="button" value="编辑" class="edit" id="modify" onclick="togglePopup1()">
+    <input type="button" value="删除" class="edit" id="delete" onclick="togglePopup2()">
+    <input type="button" value="添加+" class="edit" id="add" onclick="togglePopup3()">
+    <div class="modifydiv" id="popup1">
+        Id:<input type="text" value="" readonly><br>
+        姓名：<input type="text"><br>
+        出生日期：<input type="date"><br>
+        性别：<input type="radio" name="ssex" value="男">男
+        <input type="radio" name="ssex" value="女">女<br>
+        <input type="submit" value="确定">
+        <input type="button" onclick="togglePopup1()" value="关闭">
+    </div>
+    <div class="deletediv" id="popup2">
+        <p>确认删除吗？</p>
+        <input type="submit" value="确认">
+        <input type="button" onclick="togglePopup2()" value="取消">
+    </div>
+    <div class="adddiv" id="popup3">
+        Id:<input type="text" value=""><br>
+        姓名：<input type="text"><br>
+        出生日期：<input type="date"><br>
+        性别：<input type="radio" name="ssex" value="男">男
+        <input type="radio" name="ssex" value="女">女<br>
+        <input type="submit" value="确定">
+        <input type="button" onclick="togglePopup3()" value="关闭">
+    </div>
+</body>
+
+</html>

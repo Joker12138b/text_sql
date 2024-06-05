@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/css/templatemo_main.css">
+</head>
+<body>
+<h1>用户列表</h1>
+<div class="col-md-6 col-sm-6 margin-bottom-30">
+    <div class="panel panel-primary">
+        <div class="panel-heading">数据上传的用户列表</div>
+         <div class="panel-body">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>数据拥有者地址</th>
+            <th>数据类别</th>
+            <th>所属主体</th>
+            <th>可否共享</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in data_list %}
+            <tr>
+                <td>{{ item.address}}</td>
+                <td>{{ item.kind}}</td>
+                <td>{{ item.unit}}</td>
+                <td>{{ item.sharing}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+   </div>
+    </div>
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/Chart.min.js"></script>
+    <script src="../static/js/templatemo_script.js"></script>
+    <script type="text/javascript">
+</body>
+</html>

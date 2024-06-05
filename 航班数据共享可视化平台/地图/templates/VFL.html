@@ -1,0 +1,635 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Federated Learning Visualization</title>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        /* 自定义样式可以在这里添加 */-->
+<!--        body {-->
+<!--            background-color: #f8f9fa; /* 设置页面背景色 */-->
+<!--            font-family: Arial, sans-serif; /* 设置全局字体 */-->
+<!--        }-->
+<!--        .container {-->
+<!--            margin-top: 50px; /* 设置页面内容顶部间距 */-->
+<!--        }-->
+<!--        .card {-->
+<!--            margin-top: 20px; /* 设置卡片之间的间距 */-->
+<!--            padding: 20px; /* 设置卡片内边距 */-->
+<!--        }-->
+<!--        .chart-container {-->
+<!--            text-align: center; /* 居中显示图表 */-->
+<!--        }-->
+<!--        select.form-control {-->
+<!--            width: 200px; /* 设置下拉菜单宽度 */-->
+<!--        }-->
+<!--        canvas {-->
+<!--            max-width: 400px;-->
+<!--            max-height: 373.64px;-->
+<!--        }-->
+<!--        .boxplot-image {-->
+<!--            max-width: 100%;-->
+<!--            max-height: 400px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <h1 class="mt-5 mb-4 text-center">Federated Learning Visualization</h1>-->
+<!--        <div class="row justify-content-center">-->
+<!--            <div class="col-md-6">-->
+<!--                &lt;!&ndash; 数据集选择下拉菜单 &ndash;&gt;-->
+<!--                <div class="form-group">-->
+<!--                    <label for="datasetSelect">Select Dataset:</label>-->
+<!--                    <select class="form-control" id="datasetSelect">-->
+<!--                        <option value="a9a">a9a</option>-->
+<!--                        <option value="mnist">mnist</option>-->
+<!--                        <option value="cifar">cifar-10</option>-->
+<!--                        <option value="protein">protein</option>-->
+<!--                        <option value="flight">flight</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row justify-content-center">-->
+<!--            <div class="col-md-6">-->
+<!--                &lt;!&ndash; 图表展示区域 &ndash;&gt;-->
+<!--                <div class="card">-->
+<!--                    <h3 class="card-title">Line Chart</h3>-->
+<!--                    <canvas id="lineChart" class="chart-container"></canvas>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-6">-->
+<!--                <div class="card">-->
+<!--                    <h3 class="card-title">Boxplot</h3>-->
+<!--                    <div id="boxplot" class="chart-container"></div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--        <script>-->
+<!--            function fetchDataFromBackend(backendData) {-->
+<!--                const iterationCount = Array.from({ length: backendData[0].length }, (_, i) => i);-->
+
+<!--                return {-->
+<!--                    labels: iterationCount,-->
+<!--                    datasets: [-->
+<!--                        {-->
+<!--                            label: "auc_DP_1",-->
+<!--                            data: backendData[0],-->
+<!--                            borderColor: "#FF5733",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_DP_2",-->
+<!--                            data: backendData[1],-->
+<!--                            borderColor: "#3399FF",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_DP_5",-->
+<!--                            data: backendData[2],-->
+<!--                            borderColor: "#33FF66",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_1",-->
+<!--                            data: backendData[3],-->
+<!--                            borderColor: "#FFB6C1",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_2",-->
+<!--                            data: backendData[4],-->
+<!--                            borderColor: "#B3C6E6",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_5",-->
+<!--                            data: backendData[5],-->
+<!--                            borderColor: "#C1FFD7",-->
+<!--                            fill: false-->
+<!--                        }-->
+<!--                    ]-->
+<!--                };-->
+<!--            }-->
+
+<!--            // 创建线性图表-->
+<!--            let lineChart;-->
+<!--            document.getElementById('datasetSelect').addEventListener('change', function() {-->
+<!--                const selectedDataset = this.value;-->
+<!--                fetch('/get_data1?dataset=' + selectedDataset) //get_graphs-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(data => {-->
+<!--                        // 清空原有的图片-->
+<!--                         if (lineChart) {-->
+<!--                            lineChart.destroy();-->
+<!--                        }-->
+<!--                        document.getElementById('boxplot').innerHTML = '';-->
+
+<!--                        // 展示线型图-->
+<!--                        const dataContainer = document.getElementById('data_deal')-->
+<!--                        const chartData = fetchDataFromBackend(data.data_deal)-->
+<!--                        // createLineChart(chartData)-->
+<!--                        createLineChart(chartData, selectedDataset);-->
+
+<!--                        // 展示箱线图-->
+<!--                        const boxplotImg = new Image();-->
+<!--                        boxplotImg.src = 'data:image/png;base64,' + data.boxplot;-->
+<!--                        const boxplotContainer = document.getElementById('boxplot');-->
+<!--                        boxplotContainer.innerHTML = '<img class="boxplot-image" src="data:image/png;base64,' + data.boxplot + '" />';-->
+<!--                    });-->
+<!--            });-->
+
+<!--            function createLineChart(data, selectedDataset) {-->
+<!--                const lineChartCtx = document.getElementById("lineChart").getContext("2d");-->
+<!--                lineChart = new Chart(lineChartCtx, {-->
+<!--                    type: "line",-->
+<!--                    data: data,-->
+<!--                    options: {-->
+<!--                        responsive: true,-->
+<!--                        maintainAspectRatio: false,-->
+<!--                        scales: {-->
+<!--                            xAxes: [{-->
+<!--                                scaleLabel: {-->
+<!--                                    display: true,-->
+<!--                                    labelString: 'ACC'-->
+<!--                                }-->
+<!--                            }],-->
+<!--                            yAxes: [{-->
+<!--                                scaleLabel: {-->
+<!--                                    display: true,-->
+<!--                                    labelString: 'Epoch'-->
+<!--                                }-->
+<!--                            }]-->
+<!--                        },-->
+<!--                        // 设置数据点的半径为0，不显示圆圈-->
+<!--                        elements: {-->
+<!--                            point: {-->
+<!--                                radius: 0-->
+<!--                            }-->
+<!--                        },-->
+<!--                        // 在绘制完图表后执行回调函数-->
+<!--                        onComplete: function() {-->
+<!--                            drawThresholdPoints(selectedDataset, lineChart);-->
+<!--                        }-->
+<!--                    }-->
+<!--                });-->
+<!--            }-->
+
+<!--        </script>-->
+<!--    </div>-->
+<!--</body>-->
+
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Federated Learning Visualization</title>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+<!--    <style>-->
+<!--        /* Custom Styles */-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;-->
+<!--        }-->
+<!--        .container {-->
+<!--            margin-top: 80px;-->
+<!--            height: 80vh; /* 调整容器高度 */-->
+<!--        }-->
+<!--        .card {-->
+<!--            margin-top: 20px;-->
+<!--            padding: 20px;-->
+<!--            border: none;-->
+<!--            box-shadow: 0 4px 6px rgba(0,0,0,0.1);-->
+<!--            border-radius: 10px;-->
+<!--            background-color: #fff;-->
+<!--            position: relative;-->
+<!--            height: 100%; /* 调整卡片高度 */-->
+<!--        }-->
+<!--        .card-title {-->
+<!--            color: #333;-->
+<!--            margin-bottom: 20px;-->
+<!--            font-size: 24px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        select.form-control {-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            padding: 10px;-->
+<!--            border-radius: 5px;-->
+<!--            border: 1px solid #ced4da;-->
+<!--            background-color: #f8f9fa;-->
+<!--            color: #495057;-->
+<!--            font-size: 16px;-->
+<!--            cursor: pointer;-->
+<!--            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;-->
+<!--        }-->
+<!--        select.form-control:focus {-->
+<!--            border-color: #80bdff;-->
+<!--            outline: 0;-->
+<!--            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);-->
+<!--        }-->
+<!--        canvas {-->
+<!--            width: 100%;-->
+<!--            height: 373px;-->
+<!--        }-->
+<!--        .boxplot-image {-->
+<!--            max-width: 100%;-->
+<!--            height: auto;-->
+<!--        }-->
+<!--        .airplane {-->
+<!--            position: absolute;-->
+<!--            bottom: -100px;-->
+<!--            left: -100px;-->
+<!--            animation: flying 30s linear infinite;-->
+<!--            transform-origin: top right;-->
+<!--            z-index: 1;-->
+<!--        }-->
+<!--        @keyframes flying {-->
+<!--            /*0% { transform: translateX(100%) rotate(20deg); }*/-->
+<!--            0% {transform: translate(0, 0);}-->
+<!--            /*100% { transform: translateX(-100%) rotate(20deg); }*/-->
+<!--            100% {transform: translate(-100%, -100%);}-->
+<!--        }-->
+<!--        .scrollable-chart {-->
+<!--            max-height: 500px;-->
+<!--            overflow-y: auto;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div class="container">-->
+<!--        <h1 class="mt-5 mb-4 text-center">Federated Learning Visualization</h1>-->
+<!--        <div class="row justify-content-center">-->
+<!--            <div class="col-md-6">-->
+<!--                <div class="form-group">-->
+<!--                    <label for="datasetSelect">Select Dataset:</label>-->
+<!--                    <select class="form-control" id="datasetSelect">-->
+<!--                        <option value="a9a">a9a</option>-->
+<!--                        <option value="mnist">mnist</option>-->
+<!--                        <option value="cifar">cifar-10</option>-->
+<!--                        <option value="protein">protein</option>-->
+<!--                        <option value="flight">flight</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="row justify-content-center">-->
+<!--            <div class="col-md-6">-->
+<!--                <div class="card">-->
+<!--                    <h3 class="card-title">Line Chart</h3>-->
+<!--                    <div class="scrollable-chart">-->
+<!--                        <canvas id="lineChart"></canvas>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--            <div class="col-md-6">-->
+<!--                <div class="card">-->
+<!--                    <h3 class="card-title">Boxplot</h3>-->
+<!--                    <div id="boxplot"></div>-->
+<!--                    <img src="/static/img/plane.png" class="airplane">-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <script>-->
+<!--        // JavaScript code remains the same-->
+<!--        function fetchDataFromBackend(backendData) {-->
+<!--                const iterationCount = Array.from({ length: backendData[0].length }, (_, i) => i);-->
+
+<!--                return {-->
+<!--                    labels: iterationCount,-->
+<!--                    datasets: [-->
+<!--                        {-->
+<!--                            label: "auc_DP_1",-->
+<!--                            data: backendData[0],-->
+<!--                            borderColor: "#FF5733",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_DP_2",-->
+<!--                            data: backendData[1],-->
+<!--                            borderColor: "#3399FF",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_DP_5",-->
+<!--                            data: backendData[2],-->
+<!--                            borderColor: "#33FF66",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_1",-->
+<!--                            data: backendData[3],-->
+<!--                            borderColor: "#FFB6C1",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_2",-->
+<!--                            data: backendData[4],-->
+<!--                            borderColor: "#B3C6E6",-->
+<!--                            fill: false-->
+<!--                        },-->
+<!--                        {-->
+<!--                            label: "auc_NDP_5",-->
+<!--                            data: backendData[5],-->
+<!--                            borderColor: "#C1FFD7",-->
+<!--                            fill: false-->
+<!--                        }-->
+<!--                    ]-->
+<!--                };-->
+<!--            }-->
+
+<!--            // 创建线性图表-->
+<!--            let lineChart;-->
+<!--            document.getElementById('datasetSelect').addEventListener('change', function() {-->
+<!--                const selectedDataset = this.value;-->
+<!--                fetch('/get_data1?dataset=' + selectedDataset) //get_graphs-->
+<!--                    .then(response => response.json())-->
+<!--                    .then(data => {-->
+<!--                        // 清空原有的图片-->
+<!--                         if (lineChart) {-->
+<!--                            lineChart.destroy();-->
+<!--                        }-->
+<!--                        document.getElementById('boxplot').innerHTML = '';-->
+
+<!--                        // 展示线型图-->
+<!--                        const dataContainer = document.getElementById('data_deal')-->
+<!--                        const chartData = fetchDataFromBackend(data.data_deal)-->
+<!--                        // createLineChart(chartData)-->
+<!--                        createLineChart(chartData, selectedDataset);-->
+
+<!--                        // 展示箱线图-->
+<!--                        const boxplotImg = new Image();-->
+<!--                        boxplotImg.src = 'data:image/png;base64,' + data.boxplot;-->
+<!--                        const boxplotContainer = document.getElementById('boxplot');-->
+<!--                        boxplotContainer.innerHTML = '<img class="boxplot-image" src="data:image/png;base64,' + data.boxplot + '" />';-->
+<!--                    });-->
+<!--            });-->
+
+<!--            function createLineChart(data, selectedDataset) {-->
+<!--                const lineChartCtx = document.getElementById("lineChart").getContext("2d");-->
+<!--                lineChart = new Chart(lineChartCtx, {-->
+<!--                    type: "line",-->
+<!--                    data: data,-->
+<!--                    options: {-->
+<!--                        responsive: true,-->
+<!--                        maintainAspectRatio: false,-->
+<!--                        scales: {-->
+<!--                            x: [{-->
+<!--                                scaleLabel: {-->
+<!--                                    display: true,-->
+<!--                                    text: 'Epoch'-->
+<!--                                }-->
+<!--                            }],-->
+<!--                            y: [{-->
+<!--                                scaleLabel: {-->
+<!--                                    display: true,-->
+<!--                                    text: 'ACC'-->
+<!--                                }-->
+<!--                            }]-->
+<!--                        },-->
+<!--                        // 设置数据点的半径为0，不显示圆圈-->
+<!--                        elements: {-->
+<!--                            point: {-->
+<!--                                radius: 0-->
+<!--                            }-->
+<!--                        },-->
+<!--                        // 在绘制完图表后执行回调函数-->
+<!--                        onComplete: function() {-->
+<!--                            drawThresholdPoints(selectedDataset, lineChart);-->
+<!--                        }-->
+<!--                    }-->
+<!--                });-->
+<!--            }-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Custom Styles */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            margin-top: 80px;
+            height: 80vh; /* 调整容器高度 */
+        }
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            background-color: #fff;
+            position: relative;
+            height: 100%; /* 调整卡片高度 */
+        }
+        .card-title {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        select.form-control {
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            background-color: #f8f9fa;
+            color: #495057;
+            font-size: 16px;
+            cursor: pointer;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        select.form-control:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        canvas {
+            width: 100%;
+            height: 373px;
+        }
+        .boxplot-image {
+            max-width: 100%;
+            height: auto;
+        }
+        .airplane {
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            animation: flying 30s linear infinite;
+            transform-origin: top right;
+            z-index: 1;
+        }
+        @keyframes flying {
+            0% {transform: translate(0, 0);}
+            100% {transform: translate(-100%, -100%);}
+        }
+        .scrollable-chart {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-4 text-center">Federated Learning Visualization</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="datasetSelect">Select Dataset:</label>
+                    <select class="form-control" id="datasetSelect">
+                        <option value="a9a">a9a</option>
+                        <option value="mnist">mnist</option>
+                        <option value="cifar">cifar-10</option>
+                        <option value="protein">protein</option>
+                        <option value="flight">flight</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <h3 class="card-title">Line Chart</h3>
+                    <div class="scrollable-chart">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <h3 class="card-title">Boxplot</h3>
+                    <div id="boxplot"></div>
+                    <img src="/static/img/plane.png" class="airplane">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function fetchDataFromBackend(backendData) {
+            const iterationCount = Array.from({ length: backendData[0].length }, (_, i) => i);
+
+            return {
+                labels: iterationCount,
+                datasets: [
+                    {
+                        label: "auc_DP_1",
+                        data: backendData[0],
+                        borderColor: "#FF5733",
+                        fill: false
+                    },
+                    {
+                        label: "auc_DP_2",
+                        data: backendData[1],
+                        borderColor: "#3399FF",
+                        fill: false
+                    },
+                    {
+                        label: "auc_DP_5",
+                        data: backendData[2],
+                        borderColor: "#33FF66",
+                        fill: false
+                    },
+                    {
+                        label: "auc_NDP_1",
+                        data: backendData[3],
+                        borderColor: "#FFB6C1",
+                        fill: false
+                    },
+                    {
+                        label: "auc_NDP_2",
+                        data: backendData[4],
+                        borderColor: "#B3C6E6",
+                        fill: false
+                    },
+                    {
+                        label: "auc_NDP_5",
+                        data: backendData[5],
+                        borderColor: "#C1FFD7",
+                        fill: false
+                    }
+                ]
+            };
+        }
+
+        let lineChart;
+        document.getElementById('datasetSelect').addEventListener('change', function() {
+            const selectedDataset = this.value;
+            fetch('/get_data1?dataset=' + selectedDataset)
+                .then(response => response.json())
+                .then(data => {
+                    if (lineChart) {
+                        lineChart.destroy();
+                    }
+                    document.getElementById('boxplot').innerHTML = '';
+
+                    const dataContainer = document.getElementById('data_deal')
+                    const chartData = fetchDataFromBackend(data.data_deal)
+                    createLineChart(chartData, selectedDataset);
+
+                    const boxplotImg = new Image();
+                    boxplotImg.src = 'data:image/png;base64,' + data.boxplot;
+                    const boxplotContainer = document.getElementById('boxplot');
+                    boxplotContainer.innerHTML = '<img class="boxplot-image" src="data:image/png;base64,' + data.boxplot + '" />';
+                });
+        });
+
+        function createLineChart(data, selectedDataset) {
+            const lineChartCtx = document.getElementById("lineChart").getContext("2d");
+            lineChart = new Chart(lineChartCtx, {
+                type: "line",
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position:'bottom',
+                            title: {
+                                display: true,
+                                text: 'Epoch'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'ACC'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 0
+                        }
+                    },
+                    onComplete: function() {
+                        drawThresholdPoints(selectedDataset, lineChart);
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

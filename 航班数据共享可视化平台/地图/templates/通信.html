@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>MapVGL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    
+    <style>
+        html,
+        body {
+            width: auto;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #map {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(27, 142, 236, 0.5);
+            color: #fff;
+        }
+        
+        p {
+            margin-bottom: 0;
+        }
+        
+        
+        .title {
+            position: fixed;
+            width: 100%;
+            height: 60px;
+            z-index: 999;
+            margin: 0 auto;
+        }
+        
+        
+        .left-box {
+            position: absolute;
+            z-index: 999;
+        }
+        
+        .item-dsc {
+            position: absolute;
+            top: 10rem;
+        }
+        
+        .item-dsc div {
+            margin-bottom: 1.25rem;
+            width: 19rem;
+            height: 7rem;
+            background: rgba(0, 0, 0, .3) no-repeat 1rem;
+            position: relative;
+        }
+        
+        .item-dsc .img {
+            width: 6rem;
+            height: 6rem;
+            float: left;
+            padding-top: 0.5rem;
+        }
+        
+        .item-dsc .left-box-span1 {
+            font-family: VoxWide, serif;
+            display: block;
+            font-size: 3rem;
+            color: #DDA0DD;
+            padding-top: 0.5rem;
+            line-height: 3rem;
+            margin-left: 7rem;
+        }
+        
+        .item-dsc .left-box-span2 {
+            font-family: VoxWide, serif;
+            display: block;
+            color: #F0FFF0;
+            font-size: 1.5rem;
+            padding--: 0.25rem;
+            line-height: 3rem;
+            margin-left: 7rem;
+        }
+        
+        .item-dsc div:after, .item-dsc div:before {
+            position: absolute;
+            content: "";
+            height: 0.0625rem;
+            width: 100%;
+            left: 0;
+            top: -0.0625rem;
+            background: -webkit-linear-gradient(left, #255, #192, #203);
+        }
+        
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+        
+        
+        #right-box-1, #right-box-2, #right-box-3, #right-box-4 {
+            position: fixed;
+            top: 80px;
+            height: 280px;
+            width: 550px;
+            background-color: rgba(0, 0, 0, 0.8);
+            right: -600px;
+            text-align: center;
+            
+            transition: 0.75s;
+            z-index: 999;
+        }
+        
+        #chb-1 {
+            display: none;
+        }
+        
+        #chb-2 {
+            display: none;
+        }
+        
+        #chb-3 {
+            display: none;
+        }
+        
+        #chb-4 {
+            display: none;
+        }
+        
+        
+        canvas {
+            display: inline-block;
+        }
+        
+        *, :after, :before {
+            box-sizing: border-box;
+        }
+        
+        .topnav {
+            overflow: hidden;
+            background-color: rgba(225, 255, 255, 0.8);
+            z-index: 999;
+        }
+        
+        .topnav a {
+            float: right;
+            color: #28a4c9;
+            text-align: center;
+            padding: 7px 16px;
+            text-decoration: none;
+            font-size: 33px;
+        }
+        
+        .topnav a:hover {
+            background-color: #28a4c9;
+            color: #fff;
+        }
+        
+        .topnav a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        
+        /* Add CSS styles to set the legend text color to white and increase the font size */
+        #right-box-1 .chartjs-render-monitor .chartjs-legend {
+            color: white; /* Set the legend font color to white */
+            font-size: 16px; /* Set the legend font size */
+        }
+    
+    </style>
+    
+    <script src="//api.map.baidu.com/api?v=1.0&type=webgl&ak=8hneAcUo46NyiSvNXbHjq9851C9hdbYS"></script>
+    <script src="//mapv.baidu.com/build/mapv.min.js"></script>
+    <script src="https://unpkg.com/mapvgl@1.0.0-beta.168/dist/mapvgl.min.js"></script>
+    <script src="https://unpkg.com/mapvgl@1.0.0-beta.168/dist/mapvgl.threelayers.min.js"></script>
+    <script src="../static/js/jquery-3.7.0.min.js"></script>
+    <script src="../static/plugins/bootstrap-3.4.1/js/bootstrap.js"></script>
+    
+    <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+    <script src="https://kit.fontawesome.com/23d6cd115c.js" crossorigin="anonymous"></script>
+
+
+</head>
+<body>
+
+
+<div id="map"></div>
+
+<div class="topnav title">
+    <img src="../static/img/界面徽章.png" style="width: 50px;height: 50px">
+    <span style="display: inline-block;color: #28a4c9;width: 500px;height: 100px;font-size: 40px;position: absolute">航班动态运行图</span>
+    <a href="/index" style="color:red">返回主页</a>
+    <a><input type="checkbox" id="chb-4"><label for="chb-4">出入度</label></a>
+    <a><input type="checkbox" id="chb-3"><label for="chb-3">裕度</label></a>
+    <a><input type="checkbox" id="chb-2"><label for="chb-2">推入/出</label></a>
+    <a><input type="checkbox" id="chb-1"><label for="chb-1">到达/起飞延误</label></a>
+</div>
+
+<div class="left-box">
+    
+    
+    <div class="item-dsc">
+        <div><img class="img" src="../static/img/航班总量.png" alt=""><span class="left-box-span1"
+                                                                            id="airport_name">无</span><span
+                class="left-box-span2">机场名(缩写)</span></div>
+        <div><img class="img" src="../static/img/连通城市.png" alt=""><span class="left-box-span1"
+                                                                            id="D_Central">0</span><span
+                class="left-box-span2">度中心性</span></div>
+        <div><img class="img" src="../static/img/特征向量中心性.png" alt=""><span class="left-box-span1"
+                                                                                  id="Fea_Central">0</span><span
+                class="left-box-span2">特征向量中心性</span></div>
+    
+    
+    </div>
+</div>
+
+
+<div id="right-box-1">
+    
+    <canvas id="myChart1_3" width="400" height="200"></canvas>
+</div>
+
+<div id="right-box-2">
+    <canvas id="myChart2_3" width="400" height="200"></canvas>
+</div>
+
+<div id="right-box-3">
+    <canvas id="myChart3_3" width="400" height="200"></canvas>
+</div>
+
+<div id="right-box-4">
+    <canvas id="myChart4_3" width="400" height="200"></canvas>
+</div>
+
+<script>
+    
+    var map = new BMapGL.Map('map'); // 创建Map实例
+    map.centerAndZoom(new BMapGL.Point(-100.404, 39.915), 5); // 初始化地图,设置中心点坐标和地图级别
+    map.enableScrollWheelZoom(true); // 开启鼠标滚轮缩放
+    map.setMapType(BMAP_SATELLITE_MAP);
+    
+    // 创建炫光处理通道
+    var bright = new mapvgl.BrightEffect({
+        threshold: 0.2,
+        blurSize: 2.0,
+        clarity: 0.8
+    });
+    
+    const view = new mapvgl.View({
+        map: map
+    });
+    
+    var colors = ['#f00', '#ff0', '#0ff', '#00f'];
+    
+    var waveLayer = new mapvgl.CircleLayer({
+        // 绘制带波纹扩散的圆
+        type: 'wave',
+        // 扩散半径，支持直接设置和回调两种形式
+        radius(size) {
+            return size * 2;
+        },
+        // 周期影响扩散速度，越小越快
+        duration: 1,
+        // 拖尾影响波纹数，越大越多
+        trail: 1
+    });
+    
+    view.addLayer(waveLayer);
+    
+    function updateChart(data_info, chartID, data_label, label_x_) {
+        const ctx1_3 = document.getElementById(chartID);
+        
+        // Check if a Chart instance with ID chartID already exists
+        const existingChart = Chart.getChart(ctx1_3);
+        if (existingChart) {
+            existingChart.destroy(); // Destroy the existing Chart instance
+        }
+        var data_all_ = [];
+        var borderColor_ = ['rgb(255, 215, 0)', 'rgb(250, 235, 215)', 'rgb(255, 192, 203)'];
+        
+        for (i = 0; i < data_info.length; i++) {
+            data_all_.push({
+                label: data_label[i],
+                data: data_info[i],
+                fill: false,
+                borderColor: borderColor_[i],
+                pointStyle: 'circle',
+                pointRadius: 5,
+                pointHoverRadius: 8,
+                tension: 0.1,
+            });
+        }
+        
+        const data1_3 = {
+            labels: label_x_,
+            datasets: data_all_,
+        };
+        
+        const config1_3 = {
+            type: 'line', // Set the chart type
+            data: data1_3,
+            options: {
+                responsive: true, // Set the chart as responsive
+                
+                interaction: { // Set interaction for each point
+                    intersect: false,
+                },
+                
+                scales: { // Set X and Y axes
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: '时间点',
+                            color: 'white',
+                            font: {
+                                size: 16, // Set the X-axis font size to 16px
+                            },
+                        },
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12, // Set the X-axis tick font size to 16px
+                            },
+                            maxTicksLimit: 24, // Set the maximum number of ticks to be displayed on the X-axis
+                        },
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: '值',
+                            color: 'white',
+                            font: {
+                                size: 16, // Set the Y-axis font size to 16px
+                            },
+                        },
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 12, // Set the Y-axis tick font size to 16px
+                            },
+                        },
+                    },
+                },
+                plugins: { // Set legend font color and size
+                    legend: {
+                        labels: {
+                            color: 'white', // Set the legend font color to white
+                            font: {
+                                size: 16, // Set the legend font size to 16px
+                            },
+                        },
+                    },
+                },
+            },
+        };
+        
+        const myChart1_3pp = new Chart(ctx1_3, config1_3);
+        myChart1_3pp.update(); // Access myChart1_3 from the higher scope
+    }
+    
+    
+    var pointLayer = new mapvgl.PointLayer({
+        selectedSize: 600,
+        color: '#ac3370aa',
+        enablePicked: true, // 是否可以拾取
+        selectedIndex: -1, // 选中数据项索引
+        selectedColor: '#fff', // 选中项颜色
+        autoSelect: true, // 根据鼠标位置来自动设置选中项
+        
+        onClick: (e) => { // 点击事件
+            console.log(e);
+            if (e['dataIndex'] != -1) {
+                
+                var airport_name_ = document.getElementById("airport_name");
+                airport_name_.innerText = e['dataItem'].name_shorthand;
+                var D_Central_ = document.getElementById("D_Central");
+                D_Central_.innerText = Degree_Centrality_[e['dataIndex']][1];
+                var Fea_Central_ = document.getElementById("Fea_Central");
+                Fea_Central_.innerText = Feature_Centrality_[e['dataIndex']][1];
+                
+                var click_info = [];
+                var Depart_delay_time = [];
+                var Arr_delay_time = [];
+                var Taxi_out = [];
+                var Taxi_in = [];
+                var Margins = [];
+                var k_in = [];
+                var k_out = [];
+                var k_all = [];
+                var label_x = [];
+                for (x = 0; x < data_h_.length; x++) {
+                    click_info.push(data_h_[x][e['dataIndex']])
+                    Depart_delay_time.push(data_h_[x][e['dataIndex']]['Depart_delay_time'])
+                    Arr_delay_time.push(data_h_[x][e['dataIndex']]['Arr_delay_time'])
+                    Taxi_out.push(data_h_[x][e['dataIndex']]['Taxi_out'])
+                    Taxi_in.push(data_h_[x][e['dataIndex']]['Taxi_in'])
+                    Margins.push(data_h_[x][e['dataIndex']]['Margins'])
+                    k_in.push(data_h_[x][e['dataIndex']]['k_in'])
+                    k_out.push(data_h_[x][e['dataIndex']]['k_out'])
+                    k_all.push(data_h_[x][e['dataIndex']]['k_all'])
+                    label_x.push(data_h_[x][e['dataIndex']]['DATA_Timing'])
+                }
+                
+                cz = {
+                    'lng': e['dataItem'].geometry.coordinates[0],
+                    'lat': e['dataItem'].geometry.coordinates[1],
+                };
+                
+                var opts = {
+                    width: 400,     // 信息窗口宽度
+                    height: 50,    // 信息窗口高度
+                    title: e['dataItem'].name  // 信息窗口标题
+                };
+                var infoWindow = new BMapGL.InfoWindow("机场某些具体信息", opts);  // 创建信息窗口对象
+                map.openInfoWindow(infoWindow, cz); //开启信息窗口
+            }
+            
+            //updateChart的参数： 数据，表ID，数据对应标签,x坐标轴
+            updateChart([Depart_delay_time, Arr_delay_time], 'myChart1_3', ['航班起飞延误总时长', '航班到达延误总时长'], label_x);
+            updateChart([Taxi_in, Taxi_out], 'myChart2_3', ['航班推入时长', '航班推出时长'], label_x);
+            updateChart([Margins], 'myChart3_3', '航班裕度', label_x);
+            updateChart([k_in, k_out, k_all], 'myChart4_3', ['航班入港数', '航班出港数', '航班运行总数'], label_x);
+        }
+        
+    });
+    view.addLayer(pointLayer);
+    
+    
+    // 创建WebSocket连接
+    const socket = new WebSocket("ws://localhost:8765");
+    
+    // 处理WebSocket消息
+    socket.onmessage = function (event) {
+        // 将收到的数据显示在页面上
+        const all_information = JSON.parse(event.data);
+        
+        citys = all_information.lon_lat;
+        Degree_Centrality_ = all_information.Degree_Centrality;
+        Feature_Centrality_ = all_information.Feature_Centrality;
+        data_h_ = all_information.data_h;
+        
+        
+        const data2 = citys.map((city, index) => {
+            return {
+                geometry: {
+                    type: 'Point',
+                    coordinates: [city[2], city[3]],
+                },
+                name_shorthand: city[0],
+                name: city[1],
+                color: colors[index % 4],
+                // 圆的半径
+                size: 7
+            };
+        });
+        
+        
+        waveLayer.setData(data2);
+        pointLayer.setData(data2);
+        
+        
+        var checkbox_1 = document.getElementById("chb-1");
+        var rightBox_1 = document.getElementById("right-box-1");
+        
+        checkbox_1.addEventListener("click", function () {
+            if (checkbox_1.checked) {
+                rightBox_1.style.right = "50px";
+                // 收回其他表格
+                rightBox_2.style.right = "-600px";
+                checkbox_2.checked = false;
+                rightBox_3.style.right = "-600px";
+                checkbox_3.checked = false;
+                rightBox_4.style.right = "-600px";
+                checkbox_4.checked = false;
+            } else {
+                rightBox_1.style.right = "-600px";
+            }
+        });
+        
+        var checkbox_2 = document.getElementById("chb-2");
+        var rightBox_2 = document.getElementById("right-box-2");
+        
+        checkbox_2.addEventListener("click", function () {
+            if (checkbox_2.checked) {
+                rightBox_2.style.right = "50px";
+                // 收回其他表格
+                rightBox_1.style.right = "-600px";
+                checkbox_1.checked = false;
+                rightBox_3.style.right = "-600px";
+                checkbox_3.checked = false;
+                rightBox_4.style.right = "-600px";
+                checkbox_4.checked = false;
+            } else {
+                rightBox_2.style.right = "-600px";
+            }
+        });
+        
+        var checkbox_3 = document.getElementById("chb-3");
+        var rightBox_3 = document.getElementById("right-box-3");
+        
+        checkbox_3.addEventListener("click", function () {
+            if (checkbox_3.checked) {
+                rightBox_3.style.right = "50px";
+                // 收回其他表格
+                rightBox_1.style.right = "-600px";
+                checkbox_1.checked = false;
+                rightBox_2.style.right = "-600px";
+                checkbox_2.checked = false;
+                rightBox_4.style.right = "-600px";
+                checkbox_4.checked = false;
+            } else {
+                rightBox_3.style.right = "-600px";
+            }
+        });
+        
+        var checkbox_4 = document.getElementById("chb-4");
+        var rightBox_4 = document.getElementById("right-box-4");
+        
+        checkbox_4.addEventListener("click", function () {
+            if (checkbox_4.checked) {
+                rightBox_4.style.right = "50px";
+                // 收回其他表格
+                rightBox_1.style.right = "-600px";
+                checkbox_1.checked = false;
+                rightBox_2.style.right = "-600px";
+                checkbox_2.checked = false;
+                rightBox_3.style.right = "-600px";
+                checkbox_3.checked = false;
+                
+            } else {
+                rightBox_4.style.right = "-600px";
+            }
+        });
+    }
+
+</script>
+
+</body>
+</html>

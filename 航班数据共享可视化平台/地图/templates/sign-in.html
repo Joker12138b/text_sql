@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>登陆界面</title>
+    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        li {
+            list-style: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-image: url(static/img/空中.jpg);
+            /* background-image: url(/static/img/空中.jpg); */
+            background-repeat: no-repeat;
+            background-size: 100% auto;
+        }
+
+        #maxbox {
+            margin: 0 auto;
+            margin-top: 200px;
+            padding: 20px, 50px;
+            background-color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+            width: 600px;
+            height: 500px;
+            border-radius: 10px;
+        }
+
+        #maxbox h1 {
+            padding: 0;
+            padding-top: 60px;
+            color: white;
+            font-size: 30px;
+            padding-bottom: 4px;
+            border-bottom: solid 1px white;
+        }
+
+        #maxbox h2 {
+            font-weight: 700;
+            color: white;
+        }
+
+        #maxbox .inputbox {
+            margin-top: 30px;
+        }
+
+        #maxbox .inputText {
+            margin-top: 20px;
+        }
+
+        #maxbox .inputText span {
+            color: white;
+            font-size: 18px;
+        }
+
+        #maxbox .inputText input {
+            border: 0;
+            padding: 6px;
+            border-bottom: 1px solid white;
+            background-color: rgba(255, 255, 255, 0);
+            color: white;
+            font-size: 20px;
+        }
+
+        #maxbox .inputbox .inputButton {
+            margin: 0;
+            border: 0;
+            margin-top: 20px;
+            width: 100px;
+            height: 30px;
+            border-radius: 25px;
+            color: white;
+            background-color: #3498db;
+            font-size: 20px;
+        }
+
+        #sign_up {
+            margin-top: 50px;
+            color: white;
+            font-size: 17px;
+        }
+
+        #sign_up a {
+            color: #3498db;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050; /* Ensure modal has a higher z-index */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="maxbox">
+        <h1>航班运行数据共享可视化平台</h1>
+        <h2>用户登录</h2>
+        <div class="inputbox">
+            <form id="loginForm" action="/login" method="post">
+                <div class="inputText">
+                    <span class="iconfont icon-mine"></span>
+                    <input class="username" type="text" placeholder="用户名" name="username" style="color:white" required />
+                </div>
+                <div class="inputText">
+                    <span class="iconfont icon-lock"></span>
+                    <input type="password" placeholder="密    码" name="password" style="color:white" required />
+                    <br>
+                    <input class="remember" name="remember" type="checkbox" value="" checked="checked">
+                    <span style="color:rgb(255, 255, 255)">记住我</span>
+                </div>
+                <input class="inputButton" type="submit" value="登录" />
+                {{msg}}
+            </form>
+        </div>
+        <div id="sign_up">
+            <p>还没有账号？<a href="register">立即注册</a></p>
+        </div>
+    </div>
+    <div id="loginModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#loginForm').on('submit', function (event) {
+                event.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: '/login',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        $('#modalMessage').text(response.message);
+                        $('#loginModal').modal('show');
+                        if (response.status === 'success') {
+                            setTimeout(function () {
+                                window.location.href = "/index";
+                            }, 2000);
+                        }
+                    },
+                    error: function () {
+                        $('#modalMessage').text('登录失败，请重试。');
+                        $('#loginModal').modal('show');
+                    }
+                });
+            });
+
+            // Explicitly close the modal on clicking close button
+            $('.modal').on('click', '.close, .btn', function () {
+                $('#loginModal').modal('hide');
+            });
+        });
+    </script>
+</body>
+
+</html>
+

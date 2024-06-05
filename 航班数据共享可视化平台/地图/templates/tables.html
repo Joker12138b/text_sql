@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <!--[if IE]>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <title>Dashboard Tables, Free Admin Template</title>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width">
+
+<link rel="stylesheet" href="../static/css/templatemo_main.css">
+
+
+</head>
+
+
+<body>
+<div id="main-wrapper">
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <div class="logo"><h1>航班运行数据共享可视化平台</h1></div>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="template-page-wrapper">
+    <div class="navbar-collapse collapse templatemo-sidebar">
+        <ul class="templatemo-sidebar-menu">
+            <li>
+                <form class="navbar-form">
+                    <input type="text" class="form-control" id="templatemo_search_box" placeholder="Search...">
+                    <span class="btn btn-primary btn-sm">搜索</span>
+                </form>
+            </li>
+            <li><a href="/index"><i class="fa fa-home"></i>主页</a></li>
+            
+            <li><a href="/data-visualization"><i class="fa fa-cubes"></i>航班预测结果</a>
+            <li><a href="/通信"><i class="fa fa-cubes"></i>航班延误传播趋势</a>
+            <li><a href="/tables"><i class="fa fa-users"></i>安全隐私上链用户</a></li>
+            <li><a href="/fl"><i class="fa fa-shield"></i>数据安全共享-联邦学习</a></li>
+            <li><a href="/preferences"><i class="fa fa-cog"></i>个人设置</a></li>
+            <li><a href="javascript:;" data-toggle="modal" data-target="#confirmModal"><i
+                    class="fa fa-sign-out"></i>登出</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
+
+
+
+    <div class="templatemo-content-wrapper">
+        <div class="templatemo-content">
+            <ol class="breadcrumb">
+                <li><a href="/index" style="text-decoration:none">主页</a></li>
+                <li><a href="/data-visualization" style="text-decoration:none">航班预测结果</a></li>
+                <li><a href="/通信" style="text-decoration:none">机场延误波及趋势</a></li>
+                <li class="active">安全隐私上链用户</li>
+                <li><a href="/fl" style="text-decoration:none">数据安全共享-联邦学习</a></li>
+                <li><a href="/preferences" style="text-decoration:none">个人设置</a></li>
+                <li><a href="/" style="text-decoration:none">登录界面</a></li>
+            </ol>
+            <h1>用户数据管理</h1>
+
+            
+            <div class="row margin-bottom-30">
+                <div class="col-md-12">
+                    <ul class="nav nav-pills">
+                        <li><a href="#">民航局 <span class="badge">1</span></a></li>
+                        <li class="active"><a href="#">航空公司 <span class="badge">63</span></a></li>
+                        <li><a href="#">机场 <span class="badge">245</span></a></li>
+                        <li><a href="#">空中交通管理局 <span class="badge">7</span></a></li>
+                        <li><a href="#">地面保障单位 <span class="badge">245</span></a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="btn-group pull-right" id="templatemo_sort_btn">
+                        <button type="button" class="btn btn-default">筛选</button>
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#">名称</a></li>
+                            <li><a href="#">日期</a></li>
+                        </ul>
+                    </div>
+                    <div class="table-responsive">
+                        <h4 class="margin-bottom-15">航班计划数据</h4>
+                        <table class="table table-striped table-hover table-bordered">
+                            <thead>
+                            <tr>
+                                <th>序号</th>
+                                <th>航司名称</th>
+                                <th>日期</th>
+                                <th>计划航班</th>
+                                <th>执行航班</th>
+                                <th>取消航班</th>
+                                <th>取消率</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                                <td id="index">序号</td>
+                                <td id="air_company">航司名称</td>
+                                <td id ="air_time" >日期</td>
+                                <td id = "air_plan">计划航班</th>
+                                <td id ="air_execution">执行航班</td>
+                                <td id ="air_cancellation">取消航班</td>
+                                <td id ="air_rate">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                    </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index1">序号</td>
+                                <td id="air_company1">航司名称</td>
+                                <td id ="air_time1" >日期</td>
+                                <td id ="air_plan1">计划航班</td>
+                                <td id ="air_execution1">执行航班</td>
+                                <td id ="air_cancellation1">取消航班</td>
+                                <td id ="air_rate1">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index2">序号</td>
+                                <td id="air_company2">航司名称</td>
+                                <td id ="air_time2" >日期</td>
+                                <td id ="air_plan2">计划航班</td>
+                                <td id ="air_execution2">执行航班</td>
+                                <td id ="air_cancellation2">取消航班</td>
+                                <td id ="air_rate2">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index3">序号</td>
+                                <td id="air_company3">航司名称</td>
+                                <td id ="air_time3" >日期</td>
+                                <td id ="air_plan3">计划航班</td>
+                                <td id ="air_execution3">执行航班</td>
+                                <td id ="air_cancellation3">取消航班</td>
+                                <td id ="air_rate3">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index4">序号</td>
+                                <td id="air_company4">航司名称</td>
+                                <td id ="air_time4" >日期</td>
+                                <td id ="air_plan4">计划航班</td>
+                                <td id ="air_execution4">执行航班</td>
+                                <td id ="air_cancellation4">取消航班</td>
+                                <td id ="air_rate4">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index5">序号</td>
+                                <td id="air_company5">航司名称</td>
+                                <td id ="air_time5" >日期</td>
+                                <td id ="air_plan5">计划航班</td>
+                                <td id ="air_execution5">执行航班</td>
+                                <td id ="air_cancellation5">取消航班</td>
+                                <td id ="air_rate5">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index6">序号</td>
+                                <td id="air_company6">航司名称</td>
+                                <td id ="air_time6" >日期</td>
+                                <td id ="air_plan6">计划航班</td>
+                                <td id ="air_execution6">执行航班</td>
+                                <td id ="air_cancellation6">取消航班</td>
+                                <td id ="air_rate6">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index7">序号</td>
+                                <td id="air_company7">航司名称</td>
+                                <td id ="air_time7" >日期</td>
+                                <td id ="air_plan7">计划航班</td>
+                                <td id ="air_execution7">执行航班</td>
+                                <td id ="air_cancellation7">取消航班</td>
+                                <td id ="air_rate7">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index8">序号</td>
+                                <td id="air_company8">航司名称</td>
+                                <td id ="air_time8" >日期</td>
+                                <td id ="air_plan8">计划航班</td>
+                                <td id ="air_execution8">执行航班</td>
+                                <td id ="air_cancellation8">取消航班</td>
+                                <td id ="air_rate8">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                     <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+                            <tbody>
+                                <td id="index9">序号</td>
+                                <td id="air_company9">航司名称</td>
+                                <td id ="air_time9" >日期</td>
+                                <td id ="air_plan9">计划航班</td>
+                                <td id ="air_execution9">执行航班</td>
+                                <td id ="air_cancellation9">取消航班</td>
+                                <td id ="air_rate9">取消率</td>
+
+                                <td>
+                                    <!-- Split button -->
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info">编辑</button>
+                                    <button type="button" class="btn btn-info dropdown-toggle"
+                                            data-toggle="dropdown">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="/action_modify_data" onclick="modify();">修改</a></li>
+                                        <script>
+                                        function modify(){
+                                            const ans = confirm("确认要修改？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("修改成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                       <li><a href="/action_add_data" onclick="add();">添加</a></li>
+                                        <script>
+                                        function add(){
+                                            const ans = confirm("确认要添加？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("添加成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                        <li><a href="/action_delete_data" onclick="del();">删除</a></li>
+                                        <script>
+                                        function del(){
+                                            const ans = confirm("确认要删除？");
+                                            if (ans===false) {
+                                                event.preventDefault(); //取消默认应答
+                                               return false;
+                                            }else{
+                                                alert("删除成功")
+                                                return true
+                                            }
+                                            }
+                                        </script>
+                                    </ul>
+                                    </div>
+                                </td>
+                            </tbody>
+
+
+                        </table>
+
+                        <div id="container"></div>
+
+                    </div>
+                    <ul class="pagination pull-right">
+                        <li class="disabled"><a href="#">&laquo;</a></li>
+                        <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="/tables2">2 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="/tables3">3 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="/tables4">4 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="/tables5">5 <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">&raquo;</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span
+                            aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" id="myModalLabel">确定要退出吗?</h4>
+                </div>
+                <div class="modal-footer">
+                    <a href="/" class="btn btn-primary">是的</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">不，我再想想</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+</div>
+
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/templatemo_script.js"></script>
+
+<script>
+
+<!--    $(function() {-->
+<!--        //找到所有class=delete的标签，绑定事件-->
+<!--        $(".delete").click(function(){-->
+<!--            //删除当前行的数据-->
+<!--            $(this).parent().parent().remove();-->
+<!--    });-->
+<!--})-->
+
+
+function sleep(delay) {
+    var start = (new Date()).getTime();
+    while((new Date()).getTime() - start < delay) {
+        continue;
+    }
+}
+
+
+    // 创建WebSocket连接
+    const socket = new WebSocket("ws://localhost:8769");
+
+    // 处理WebSocket消息
+    socket.onmessage = function (event) {
+        // 将收到的数据显示在页面上
+        const all_information = JSON.parse(event.data);
+            console.log(all_information);
+                    var index_ = document.getElementById("index");
+                    index_.innerText = all_information.id[0];
+                    var air_company_ = document.getElementById("air_company");
+                    air_company_.innerText = all_information.airline[0];
+                    var air_time_ = document.getElementById("air_time");
+                    air_time_.innerText = all_information.date[0];
+                    var air_plan_ = document.getElementById("air_plan");
+                    air_plan_.innerText = all_information.flight_plan_number[0];
+                    var air_execution_ = document.getElementById("air_execution");
+                    air_execution_.innerText = all_information.flight_execution_number[0];
+                    var air_cancellation_ = document.getElementById("air_cancellation");
+                    air_cancellation_.innerText = all_information.flight_cancellation_number[0];
+                    var air_rate_ = document.getElementById("air_rate");
+                    air_rate_.innerText = all_information.cancellation_rate[0];
+
+                    var index1_ = document.getElementById("index1");
+                    index1_.innerText = all_information.id[1];
+                    var air_company1_ = document.getElementById("air_company1");
+                    air_company1_.innerText = all_information.airline[1];
+                    var air_time1_ = document.getElementById("air_time1");
+                    air_time1_.innerText = all_information.date[1];
+                    var air_plan1_ = document.getElementById("air_plan1");
+                    air_plan1_.innerText = all_information.flight_plan_number[1];
+                    var air_execution1_ = document.getElementById("air_execution1");
+                    air_execution1_.innerText = all_information.flight_execution_number[1];
+                    var air_cancellation1_ = document.getElementById("air_cancellation1");
+                    air_cancellation1_.innerText = all_information.flight_cancellation_number[1];
+                    var air_rate1_ = document.getElementById("air_rate1");
+                    air_rate1_.innerText = all_information.cancellation_rate[1];
+
+                    var index2_ = document.getElementById("index2");
+                    index2_.innerText = all_information.id[2];
+                    var air_company2_ = document.getElementById("air_company2");
+                    air_company2_.innerText = all_information.airline[2];
+                    var air_time2_ = document.getElementById("air_time2");
+                    air_time2_.innerText = all_information.date[2];
+                    var air_plan2_ = document.getElementById("air_plan2");
+                    air_plan2_.innerText = all_information.flight_plan_number[2];
+                    var air_execution2_ = document.getElementById("air_execution2");
+                    air_execution2_.innerText = all_information.flight_execution_number[2];
+                    var air_cancellation2_ = document.getElementById("air_cancellation2");
+                    air_cancellation2_.innerText = all_information.flight_cancellation_number[2];
+                    var air_rate2_ = document.getElementById("air_rate2");
+                    air_rate2_.innerText = all_information.cancellation_rate[2];
+
+                    var index3_ = document.getElementById("index3");
+                    index3_.innerText = all_information.id[3];
+                    var air_company3_ = document.getElementById("air_company3");
+                    air_company3_.innerText = all_information.airline[3];
+                    var air_time3_ = document.getElementById("air_time3");
+                    air_time3_.innerText = all_information.date[3];
+                    var air_plan3_ = document.getElementById("air_plan3");
+                    air_plan3_.innerText = all_information.flight_plan_number[3];
+                    var air_execution3_ = document.getElementById("air_execution3");
+                    air_execution3_.innerText = all_information.flight_execution_number[3];
+                    var air_cancellation3_ = document.getElementById("air_cancellation3");
+                    air_cancellation3_.innerText = all_information.flight_cancellation_number[3];
+                    var air_rate3_ = document.getElementById("air_rate3");
+                    air_rate3_.innerText = all_information.cancellation_rate[3];
+
+                    var index4_ = document.getElementById("index4");
+                    index4_.innerText = all_information.id[4];
+                    var air_company4_ = document.getElementById("air_company4");
+                    air_company4_.innerText = all_information.airline[4];
+                    var air_time4_ = document.getElementById("air_time4");
+                    air_time4_.innerText = all_information.date[4];
+                    var air_plan4_ = document.getElementById("air_plan4");
+                    air_plan4_.innerText = all_information.flight_plan_number[4];
+                    var air_execution4_ = document.getElementById("air_execution4");
+                    air_execution4_.innerText = all_information.flight_execution_number[4];
+                    var air_cancellation4_ = document.getElementById("air_cancellation4");
+                    air_cancellation4_.innerText = all_information.flight_cancellation_number[4];
+                    var air_rate4_ = document.getElementById("air_rate4");
+                    air_rate4_.innerText = all_information.cancellation_rate[4];
+
+                    var index5_ = document.getElementById("index5");
+                    index5_.innerText = all_information.id[5];
+                    var air_company5_ = document.getElementById("air_company5");
+                    air_company5_.innerText = all_information.airline[5];
+                    var air_time5_ = document.getElementById("air_time5");
+                    air_time5_.innerText = all_information.date[5];
+                    var air_plan5_ = document.getElementById("air_plan5");
+                    air_plan5_.innerText = all_information.flight_plan_number[5];
+                    var air_execution5_ = document.getElementById("air_execution5");
+                    air_execution5_.innerText = all_information.flight_execution_number[5];
+                    var air_cancellation5_ = document.getElementById("air_cancellation5");
+                    air_cancellation5_.innerText = all_information.flight_cancellation_number[5];
+                    var air_rate5_ = document.getElementById("air_rate5");
+                    air_rate5_.innerText = all_information.cancellation_rate[5];
+
+                    var index6_ = document.getElementById("index6");
+                    index6_.innerText = all_information.id[6];
+                    var air_company6_ = document.getElementById("air_company6");
+                    air_company6_.innerText = all_information.airline[6];
+                    var air_time6_ = document.getElementById("air_time6");
+                    air_time6_.innerText = all_information.date[6];
+                    var air_plan6_ = document.getElementById("air_plan6");
+                    air_plan6_.innerText = all_information.flight_plan_number[6];
+                    var air_execution6_ = document.getElementById("air_execution6");
+                    air_execution6_.innerText = all_information.flight_execution_number[6];
+                    var air_cancellation6_ = document.getElementById("air_cancellation6");
+                    air_cancellation6_.innerText = all_information.flight_cancellation_number[6];
+                    var air_rate6_ = document.getElementById("air_rate6");
+                    air_rate6_.innerText = all_information.cancellation_rate[6];
+
+                    var index7_ = document.getElementById("index7");
+                    index7_.innerText = all_information.id[7];
+                    var air_company7_ = document.getElementById("air_company7");
+                    air_company7_.innerText = all_information.airline[7];
+                    var air_time7_ = document.getElementById("air_time7");
+                    air_time7_.innerText = all_information.date[7];
+                    var air_plan7_ = document.getElementById("air_plan7");
+                    air_plan7_.innerText = all_information.flight_plan_number[7];
+                    var air_execution7_ = document.getElementById("air_execution7");
+                    air_execution7_.innerText = all_information.flight_execution_number[7];
+                    var air_cancellation7_ = document.getElementById("air_cancellation7");
+                    air_cancellation7_.innerText = all_information.flight_cancellation_number[7];
+                    var air_rate7_ = document.getElementById("air_rate7");
+                    air_rate7_.innerText = all_information.cancellation_rate[7];
+
+                    var index8_ = document.getElementById("index8");
+                    index8_.innerText = all_information.id[8];
+                    var air_company8_ = document.getElementById("air_company8");
+                    air_company8_.innerText = all_information.airline[8];
+                    var air_time8_ = document.getElementById("air_time8");
+                    air_time8_.innerText = all_information.date[8];
+                    var air_plan8_ = document.getElementById("air_plan8");
+                    air_plan8_.innerText = all_information.flight_plan_number[8];
+                    var air_execution8_ = document.getElementById("air_execution8");
+                    air_execution8_.innerText = all_information.flight_execution_number[8];
+                    var air_cancellation8_ = document.getElementById("air_cancellation8");
+                    air_cancellation8_.innerText = all_information.flight_cancellation_number[8];
+                    var air_rate8_ = document.getElementById("air_rate8");
+                    air_rate8_.innerText = all_information.cancellation_rate[8];
+
+                    var index9_ = document.getElementById("index9");
+                    index9_.innerText = all_information.id[9];
+                    var air_company9_ = document.getElementById("air_company9");
+                    air_company9_.innerText = all_information.airline[9];
+                    var air_time9_ = document.getElementById("air_time9");
+                    air_time9_.innerText = all_information.date[9];
+                    var air_plan9_ = document.getElementById("air_plan9");
+                    air_plan9_.innerText = all_information.flight_plan_number[9];
+                    var air_execution9_ = document.getElementById("air_execution9");
+                    air_execution9_.innerText = all_information.flight_execution_number[9];
+                    var air_cancellation9_ = document.getElementById("air_cancellation9");
+                    air_cancellation9_.innerText = all_information.flight_cancellation_number[9];
+                    var air_rate9_ = document.getElementById("air_rate9");
+                    air_rate9_.innerText = all_information.cancellation_rate[9];
+
+
+
+
+         }
+  </script>
+
+
+</body>
+</html>

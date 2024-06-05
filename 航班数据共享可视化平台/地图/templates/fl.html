@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Introduction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .section {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+        }
+        .section h2 {
+            color: #666;
+        }
+        .section p {
+            color: #888;
+        }
+        .section img {
+            width: auto;
+            height: 600px;
+            max-width: 100%;
+            display: block;
+            margin: 20px auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        .section img:hover {
+            transform: scale(1.05);
+        }
+        .section a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .section a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+     <div class="container">
+        <div class="section animate__animated animate__fadeInLeft">
+            <h2>Horizontal Federated Learning</h2>
+            <p>横向联邦学习，适用于参与者的数据特征重叠较多，而样本ID重叠较少的情况，是对样本数量的扩充</p>
+            <p>例如两家异地的航空公司，总体收集的用户特征相同，但是不同地区的受众群体不同</p>
+            <img src="/static/img/HFL.png" alt="Horizontal Federated Learning">
+            <a href="/HFL">View Visualization</a>
+        </div>
+        <div class="section animate__animated animate__fadeInRight">
+            <h2>Vertical Federated Learning</h2>
+            <p>纵向联邦学习，适用于参与者训练样本ID重叠较多，而数据特征重叠较少的情况,是对特征的扩充</p>
+            <p>例如在同一个地方的航司、机场、空中交管局、地面保障单位等，对应的用户群体一致，但是收集的用户特征信息不同</p>
+            <img src="/static/img/VFL.png" alt="Vertical Federated Learning">
+            <a href="/VFL">View Visualization</a>
+        </div>
+    </div>
+</body>
+</html>

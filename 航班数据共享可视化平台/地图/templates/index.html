@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+  <title>Dashboard, Free HTML5 Admin Template</title>
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="viewport" content="width=device-width">        
+<link rel="stylesheet" href="../static/css/templatemo_main.css">
+
+</head>
+<body>
+
+<div id="main-wrapper">
+    <div class="navbar navbar-inverse" role="navigation">
+        <div class="navbar-header">
+            <div class="logo"><h1>航班运行数据共享可视化平台</h1></div>
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+    </div>
+</div>
+<div class="template-page-wrapper">
+    <div class="navbar-collapse collapse templatemo-sidebar">
+        <ul class="templatemo-sidebar-menu">
+            <li>
+                <form class="navbar-form">
+                    <input type="text" class="form-control" id="templatemo_search_box" placeholder="Search...">
+                    <span class="btn btn-primary btn-sm">搜索</span>
+                </form>
+            </li>
+            <li><a href="/index"><i class="fa fa-home"></i>主页</a></li>
+            <li><a href="/data-visualization"><i class="fa fa-cubes"></i>航班预测结果</a>
+            <li><a href="/通信"><i class="fa fa-cubes"></i>航班延误传播趋势</a>
+            <li><a href="/tables"><i class="fa fa-users"></i>安全隐私上链用户</a></li>
+            <li><a href="/fl"><i class="fa fa-shield"></i>数据安全共享-联邦学习</a></li>
+            <li><a href="/preferences"><i class="fa fa-cog"></i>个人设置</a></li>
+            <li><a href="/sign-in" data-toggle="modal" data-target="#confirmModal"><i
+                    class="fa fa-sign-out"></i>登出</a></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
+
+      <div class="templatemo-content-wrapper">
+        <div class="templatemo-content">
+          <ol class="breadcrumb">
+            <li class="active">主页</li>
+            <li><a href="/data-visualization" style="text-decoration:none">航班预测结果</a></li>
+              <li><a href="/通信" style="text-decoration:none">机场延误波及趋势</a></li>
+              <li><a href="/tables" style="text-decoration:none">安全隐私上链用户</a></li>
+              <li><a href="/fl" style="text-decoration:none">数据安全共享-联邦学习</a></li>
+              <li><a href="/preferences" style="text-decoration:none">个人设置</a></li>
+            <li><a href="/sign-in" style="text-decoration:none">登录界面</a></li>
+          </ol>
+          <h1>欢迎访问</h1>
+          <p>该软件根据 <a href="https://www.caac.gov.cn/index.html">民航局</a>规定的民航行业数据管理的原则、规则与机制，努力构建一个全面可靠的<a href="#">航班运行数据共享可视化平台</a>，以实现民航系统多主体之间协同交互、分类分级访问控制和安全共享数据的功能。</p>
+
+          <div class="margin-bottom-30">
+            <div class="row">
+              <div class="col-md-12">
+                <ul class="nav nav-pills">
+                  <li class="active"><a href="#">新闻公告 <span class="badge">42</span></a></li>
+                </ul>          
+              </div>
+            </div>
+          </div>         
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="templatemo-alerts">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                      <strong>注意</strong> 11月全球航班量TOP20机场准点榜发布 北京首都机场排在首位
+                    </div>
+                    <div class="alert alert-info alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                      10月全球航班量TOP20航司准点榜发布 南航、国航、东航分列2-4位
+                    </div>
+                    <div class="alert alert-warning alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                      9月全球航司最新准点率榜单发布 春秋航空成国内最准点的主要客运航司
+                    </div>
+                    <div class="alert alert-danger alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                      8月俄航再成全球最准点航司 国航连续3个月成国内最准点的主要客运航司
+                    </div>            
+                  </div>  
+                </div>            
+              </div>              
+            </div>
+            <div class="col-md-6">
+              <div class="templatemo-progress">
+                <div class="list-group">
+                  <a href="#" class="list-group-item active">
+                    <h4 class="list-group-item-heading">Latest Data</h4>
+                    <p class="list-group-item-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent vel adipiscing quam. Maecenas vehicula rhoncus magna, vitae lacinia sem auctor a. Vestibulum aliquam, nisl nec luctus volutpat, turpis orci posuere arcu, eget consectetur quam nunc ac arcu.</p>
+                  </a>
+                  <a href="#" class="list-group-item">
+                    <h4 class="list-group-item-heading">Older Data</h4>
+                    <p class="list-group-item-text">Maecenas in facilisis nisi. Proin gravida nunc vel justo vestibulum, quis adipiscing velit faucibus. Sed a hendrerit orci. Nunc ut bibendum eros, at varius urna. Integer cursus condimentum dui vitae sagittis. Curabitur at vehicula nunc. Praesent at sem non nisl pellentesque placerat.</p>
+                  </a>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-success" style="width: 35%">
+                    <span class="sr-only">35% Complete (success)</span>
+                  </div>
+                  <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: 20%">
+                    <span class="sr-only">20% Complete (warning)</span>
+                  </div>
+                  <div class="progress-bar progress-bar-danger" style="width: 10%">
+                    <span class="sr-only">10% Complete (danger)</span>
+                  </div>
+                </div>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-striped active"  role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+                    <span class="sr-only">45% Complete</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="templatemo-panels">
+            <div class="row">
+              <div class="col-md-6 col-sm-6 margin-bottom-30">
+                <div class="panel panel-success">
+                  <div class="panel-heading">航司到港准点率统计</div>
+                  <canvas id="templatemo-line-chart" height="120" width="500"></canvas>
+                </div> 
+                <span class="btn btn-success"><a href="/data-visualization">查看更多</a></span>
+              </div>   
+              <div class="col-md-6 col-sm-6 margin-bottom-30">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">数据上传显示</div>
+                  <div class="panel-body">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>数据拥有者地址</th>
+                          <th>数据类别</th>
+                          <th>所属主体</th>
+                          <th>可否共享</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>0x0A098Eda01Ce92ff4A4CCb7A4fFFb5A43EBC70DC</td>
+                          <td>2019年3月国内航班计划数据</td>
+                          <td>航空公司</td>
+                          <td><span class="btn btn-success"><a href="/tables">查看</a></span></td>
+                        </tr>
+                        <tr>
+                          <td>0x1aE0EA34a72D944a8C7603FfB3eC30a6669E454C</td>
+                          <td>航班动态数据</td>
+                          <td>机场</td>
+                          <td><span class="btn btn-warning"><a href=#>查看</a></span></td>
+                        </tr>
+                        <tr>
+                          <td>0xCA35b7d915458EF540aDe6068dFe2F44E8fa733c</td>
+                          <td>航班标签数据</td>
+                          <td>空中交通管制单位</td>
+                          <td><span class="btn btn-warning"><a href=#>查看</a></span></td>
+                        </tr>
+                        <tr>
+                          <td>0x14723A09ACff6D2A60DcdF7aA4AFf308FDDC160C</td>
+                          <td>航班地面保障数据</td>
+                          <td>地面保障单位</td>
+                          <td><span class="btn btn-warning"><a href=#>查看</a></span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <span class="btn btn-primary"><a href="/datalist">查看更多</a></span>
+              </div>       
+            </div>
+            <div class="row">
+              <div class="col-md-6 col-sm-6">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist" id="templatemo-tabs">
+                  <li class="active"><a href="#home" role="tab" data-toggle="tab">Home</a></li>
+                  <li><a href="#profile" role="tab" data-toggle="tab">Profile</a></li>
+                  <li><a href="#messages" role="tab" data-toggle="tab">Messages</a></li>
+                  <li><a href="#settings" role="tab" data-toggle="tab">Settings</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div class="tab-pane fade in active" id="home">
+                    <ul class="list-group">
+                      <li class="list-group-item"><input type="checkbox" name="" value=""> Suspendisse dapibus sodales</li>
+                      <li class="list-group-item"><input type="checkbox" name="" value=""> Proin mattis ex vitae</li>
+                      <li class="list-group-item"><input type="checkbox" name="" value=""> Aenean euismod dui vel</li>
+                      <li class="list-group-item"><input type="checkbox" name="" value=""> Vivamus dictum posuere odio</li>
+                      <li class="list-group-item"><input type="checkbox" name="" value=""> Morbi convallis sed nisi suscipit</li>
+                    </ul>
+                  </div>
+                  <div class="tab-pane fade" id="profile">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <span class="badge">33</span>
+                        Vivamus dictum posuere odio
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge">9</span>
+                        Dapibus ac facilisis in
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge">0</span>
+                        Morbi convallis sed nisi suscipit
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge">14</span>
+                        Cras justo odio
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge">2</span>
+                        Vestibulum at eros
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="tab-pane fade" id="messages">
+                    <div class="list-group">
+                      <a href="#" class="list-group-item active">
+                        Morbi convallis sed nisi suscipit
+                      </a>
+                      <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                      <a href="#" class="list-group-item">Morbi leo risus</a>
+                      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                      <a href="#" class="list-group-item">Vestibulum at eros</a>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="settings">
+                    <div class="list-group">
+                      <a href="#" class="list-group-item disabled">
+                        Vivamus dictum posuere odio
+                      </a>
+                      <a href="#" class="list-group-item">Porta ac consectetur ac</a>
+                      <a href="#" class="list-group-item">Vestibulum at eros</a>
+                      <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
+                      <a href="#" class="list-group-item">Morbi leo risus</a>
+                    </div>
+                  </div>
+                </div> <!-- tab-content --> 
+              </div> 
+              <div class="col-md-6 col-sm-6">
+                <div class="panel-group" id="accordion">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                          11月全球航班量TOP20机场准点榜发布 北京首都机场排在首位
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                      <div class="panel-body">
+                        数据显示，9月全球航司实际到港航班量为283万班次，同比增长19.11%；其平均到港准点率为77.64%,同比下降0.26%。中国方面，国内航司实际执飞客运航班量为41.04万班次，同比增长122.22%。国内航司平均到港准点率为81.34%,同比下降15.34%。
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                          10月全球航班量TOP20航司准点榜发布 南航、国航、东航分列2-4位
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        数据显示，10月全球航司实际到港航班量为287万班次，同比增长20.66%；其平均到港准点率为80.13%，同比提升0.23%。中国方面，国内航司实际执飞客运航班量为41.58万班次，同比增长179.33%。国内航司平均到港准点率为88.63%,同比下降8.62%。
+                      </div>
+                    </div>
+                  </div>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">
+                      <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                          9月全球航司最新准点率榜单发布 春秋航空成国内最准点的主要客运航司
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse">
+                      <div class="panel-body">
+                        <button type="button" id="loading-example-btn" data-loading-text="加载中" class="btn btn-primary">
+                          点击查看
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>          
+            </div> 
+          </div>    
+        </div>
+      </div>
+      <!-- Modal -->
+      <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                            <h4 class="modal-title" id="myModalLabel">确定要退出吗?</h4>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="/" class="btn btn-primary">是的</a>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">不，我再想想</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/Chart.min.js"></script>
+    <script src="../static/js/templatemo_script.js"></script>
+    <script type="text/javascript">
+    // Line chart
+    var randomScalingFactor = function(){ return Math.round(Math.random()*100)};
+    var lineChartData = {
+      labels : ["January","February","March","April","May","June","July"],
+      datasets : [
+      {
+        label: "My First dataset",
+        fillColor : "rgba(220,220,220,0.2)",
+        strokeColor : "rgba(220,220,220,1)",
+        pointColor : "rgba(220,220,220,1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(220,220,220,1)",
+        data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+      },
+      {
+        label: "My Second dataset",
+        fillColor : "rgba(151,187,205,0.2)",
+        strokeColor : "rgba(151,187,205,1)",
+        pointColor : "rgba(151,187,205,1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(151,187,205,1)",
+        data : [randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor()]
+      }
+      ]
+
+    }
+
+    window.onload = function(){
+      var ctx_line = document.getElementById("templatemo-line-chart").getContext("2d");
+      window.myLine = new Chart(ctx_line).Line(lineChartData, {
+        responsive: true
+      });
+    };
+
+    $('#myTab a').click(function (e) {
+      e.preventDefault();
+      $(this).tab('show');
+    });
+
+    $('#loading-example-btn').click(function () {
+      var btn = $(this);
+      btn.button('loading');
+      // $.ajax(...).always(function () {
+      //   btn.button('reset');
+      // });
+  });
+  </script>
+</body>
+</html>

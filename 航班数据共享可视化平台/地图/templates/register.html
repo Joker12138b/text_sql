@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <style>
+        li {list-style: none;}
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-image: url(static/img/登录界面背景.jpg);
+            background-repeat: no-repeat;
+            /*这里的100% auto 表示将背景图片的长度100%显示，高度自适应*/
+            background-size: 100% auto;
+        }
+        #maxbox {
+            margin: 0 auto;
+            margin-top: 200px;
+            padding: 20px 50px; /*修正了padding的逗号为分号*/
+            /*这里的90表示以不透明度90%显示*/
+            background-color: #00000090;
+            text-align: center;
+            width: 600px;
+            height: 500px;
+            border-radius: 10px;
+        }
+        #maxbox h1 {
+            padding: 0;
+            padding-top: 60px;
+            color: white;
+            font-size: 30px;
+            padding-bottom: 4px;
+            border-bottom: solid 1px white;
+        }
+        #maxbox h2 {
+            font-weight: 700;
+            color:white;
+        }
+        #maxbox .inputbox {
+            margin-top: 30px;
+        }
+        #maxbox .inputText {
+            margin-top: 20px;
+        }
+        #maxbox .inputText span {
+            color: white;
+            font-size: 18px;
+        }
+        #maxbox .inputText input {
+            border: 0;
+            padding: 6px;
+            border-bottom: 1px solid white;
+            /*这里的00表示不透明度为0，即透明显示*/
+            background-color: #FFFFFF00;
+            color: white;
+            font-size: 20px;
+        }
+        #maxbox .inputbox .inputButton {
+            margin: 0;
+            border: 0;
+            margin-top: 20px;
+            width: 100px;
+            height: 30px;
+            /*给这个按钮变为圆角边角*/
+            border-radius: 25px;
+            color: white;
+            background-color: #3498db;
+            font-size: 20px;
+        }
+        #sign_up {
+            margin-top: 50px;
+            color: white;
+            font-size: 17px;
+        }
+        #sign_up a {
+            color: #3498db;
+        }
+        .submitButton {
+            margin-top: 20px;
+            border-radius: 15px; /* 设置为按钮高度的一半，使按钮呈现椭圆形状 */
+            width: 100px;
+            height: 30px;
+            color: white;
+            background-color: #3498db;
+            font-size: 20px;
+            border: none; /* 移除按钮的边框 */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1050; /* Ensure modal has a higher z-index */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="maxbox">
+    <h1>用户信息注册</h1>
+    <div class="inputbox">
+        <form id="loginForm" action="/register" method="post">
+            <div class="inputbox">
+                <input class="username" type="text" placeholder="用户名" name="username" style="color:black"/>
+            </div>
+            <div class="inputbox">
+                <input class="password" placeholder="密码" name="password" style="color:black"/>
+            </div>
+            <input class="submitButton" type="submit" value="提交"/>
+            {{msg}}
+            <!--            <p id="message">{{msg}}</p>-->
+        </form>
+    </div>
+    <div style="margin-top: 20px;">
+        <p>身份选择：
+            <select id="role" name="role">
+                <option value="user">普通用户</option>
+                <option value="admin">管理员</option>
+            </select>
+        </p>
+    </div>
+    <div id="loginModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p id="modalMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#loginForm').on('submit', function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '/register',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    $('#modalMessage').text(response.message);
+                    $('#loginModal').modal('show');
+                    if (response.status === 'success') {
+                        $('#loginModal').on('hidden.bs.modal', function () {
+                            window.location.href = "/";
+                        });
+                    }
+                },
+                error: function () {
+                    $('#modalMessage').text('注册失败');
+                    $('#loginModal').modal('show');
+                }
+            });
+        });
+
+        // Explicitly close the modal on clicking close button
+        $('.modal').on('click', '.close, .btn', function () {
+            $('#loginModal').modal('hide');
+        });
+    });
+</script>

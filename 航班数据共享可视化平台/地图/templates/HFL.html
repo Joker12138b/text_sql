@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Learning Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* 自定义样式可以在这里添加 */
+        body {
+            background-color: #f8f9fa; /* 设置页面背景色 */
+            font-family: Arial, sans-serif; /* 设置全局字体 */
+        }
+        .container {
+            margin-top: 50px; /* 设置页面内容顶部间距 */
+        }
+        .card {
+            margin-top: 20px; /* 设置卡片之间的间距 */
+            padding: 20px; /* 设置卡片内边距 */
+        }
+        .chart-container {
+            text-align: center; /* 居中显示图表 */
+        }
+        select.form-control {
+            width: 200px; /* 设置下拉菜单宽度 */
+        }
+        canvas {
+            max-width: 100%;
+            max-height: 373.64px;
+        }
+        .boxplot-image {
+            max-width: 100%;
+            max-height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-4 text-center">Federated Learning Visualization</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- 数据集选择下拉菜单 -->
+                <div class="form-group">
+                    <label for="datasetSelect">Select Dataset:</label>
+                    <select class="form-control" id="datasetSelect">
+                        <option value="mnist">mnist</option>
+                        <option value="femnist">femnist</option>
+                        <option value="fmnist">fmnist</option>
+                        <option value="synthetic">synthetic</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <!-- 图表展示区域 -->
+                <div class="card">
+                    <h3 class="card-title">Line Chart</h3>
+                    <canvas id="lineChart" class="chart-container"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <h3 class="card-title">Boxplot</h3>
+                    <div id="boxplot" class="chart-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <script>
+            function fetchDataFromBackend(backendData) {
+                const iterationCount = Array.from({ length: backendData[0].length }, (_, i) => i);
+
+                return {
+                    labels: iterationCount,
+                    datasets: [
+                        {
+                            label: "FedAVG",
+                            data: backendData[0],
+                            borderColor: "red",
+                            fill: false
+                        },
+                        {
+                            label: "FedSAE",
+                            data: backendData[1],
+                            borderColor: "blue",
+                            fill: false
+                        },
+                        {
+                            label: "FedProx",
+                            data: backendData[2],
+                            borderColor: "green",
+                            fill: false
+                        },
+                        {
+                            label: "NIPAFed",
+                            data: backendData[3],
+                            borderColor: "orange",
+                            fill: false
+                        }
+                    ]
+                };
+            }
+
+            // 创建线性图表
+            let lineChart;
+            document.getElementById('datasetSelect').addEventListener('change', function() {
+                const selectedDataset = this.value;
+                fetch('/get_data?dataset=' + selectedDataset) //get_graphs
+                    .then(response => response.json())
+                    .then(data => {
+                        // 清空原有的图片
+                         if (lineChart) {
+                            lineChart.destroy();
+                        }
+                        document.getElementById('boxplot').innerHTML = '';
+
+                        // 展示线型图
+                        const dataContainer = document.getElementById('data_deal')
+                        const chartData = fetchDataFromBackend(data.data_deal)
+                        // createLineChart(chartData)
+                        createLineChart(chartData, selectedDataset);
+
+                        // 展示箱线图
+                        const boxplotImg = new Image();
+                        boxplotImg.src = 'data:image/png;base64,' + data.boxplot;
+                        const boxplotContainer = document.getElementById('boxplot');
+                        boxplotContainer.innerHTML = '<img class="boxplot-image" src="data:image/png;base64,' + data.boxplot + '" />';
+                    });
+            });
+            // function createLineChart(data, selectedDataset) {
+            //     const lineChartCtx = document.getElementById("lineChart").getContext("2d");
+            //     lineChart = new Chart(lineChartCtx, {
+            //         type: "line",
+            //         data: data,
+            //         options: {
+            //             responsive: true,
+            //             maintainAspectRatio: false,
+            //             scales: {
+            //                 xAxes: [{
+            //                     scaleLabel: {
+            //                         display: true,
+            //                         labelString: 'ACC'
+            //                     }
+            //                 }],
+            //                 yAxes: [{
+            //                     scaleLabel: {
+            //                         display: true,
+            //                         labelString: 'Epoch'
+            //                     }
+            //                 }]
+            //             },
+            //             // 设置数据点的半径为0，不显示圆圈
+            //             elements: {
+            //                 point: {
+            //                     radius: 0
+            //                 }
+            //             },
+            //             // 在绘制完图表后执行回调函数
+            //             onComplete: function () {
+            //                 drawThresholdPoints(selectedDataset, data.datasets, lineChart);
+            //             }
+            //         }
+            //     });
+            // }
+            // function drawThresholdPoints(selectedDataset, lineChart) {
+            //     const datasets = lineChart.data.datasets;
+            //     const threshold = getThreshold(selectedDataset);
+            //     datasets.forEach((dataset, datasetIndex) => {
+            //         if (dataset.label === selectedDataset) {
+            //             dataset.data.forEach((value, index) => {
+            //                 if (value >= threshold) {
+            //                     const point = lineChart.getDatasetMeta(datasetIndex).data[index];
+            //                     const ctx = lineChart.ctx;
+            //                     // 标注点的位置信息
+            //                     ctx.fillStyle = 'black';
+            //                     ctx.textAlign = 'center';
+            //                     ctx.fillText('Threshold Reached', point.x, point.y - 10);
+            //                     // 绘制一个红色圆圈来标记阈值点
+            //                     ctx.beginPath();
+            //                     ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+            //                     ctx.fillStyle = 'red';
+            //                     ctx.fill();
+            //                 }
+            //             });
+            //         }
+            //     });
+            // }
+            //
+            // function getThreshold(selectedDataset) {
+            //     // 根据选择的数据集返回相应的阈值
+            //     switch(selectedDataset) {
+            //         case 'mnist':
+            //             return 0.89;
+            //         case 'femnist':
+            //             return 0.69;
+            //         case 'fmnist':
+            //             return 0.82;
+            //         case 'synthetic':
+            //             return 0.69;
+            //         default:
+            //             return 0;
+            //     }
+            // }
+
+            function createLineChart(data, selectedDataset) {
+                const lineChartCtx = document.getElementById("lineChart").getContext("2d");
+                lineChart = new Chart(lineChartCtx, {
+                    type: "line",
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Epoch'
+                                }
+                            },
+                            y: {
+                                title: {
+                                    display: true,
+                                    text: 'ACC'
+                                }
+                            }
+                        },
+                        // 设置数据点的半径为0，不显示圆圈
+                        elements: {
+                            point: {
+                                radius: 0
+                            }
+                        },
+                        // 在绘制完图表后执行回调函数
+                        onComplete: function() {
+                            drawThresholdPoints(selectedDataset, lineChart);
+                        }
+                    }
+                });
+            }
+
+            function drawThresholdPoints(selectedDataset, lineChart) {
+                const datasets = lineChart.data.datasets;
+                const threshold = getThreshold(selectedDataset);
+                datasets.forEach((dataset, datasetIndex) => {
+                    if (dataset.label === selectedDataset) {
+                        dataset.data.forEach((value, index) => {
+                            if (value >= threshold) {
+                                const point = lineChart.getDatasetMeta(datasetIndex).data[index];
+                                const ctx = lineChart.ctx;
+                                // 标注点的位置信息
+                                ctx.fillStyle = 'black';
+                                ctx.textAlign = 'center';
+                                ctx.fillText('Threshold Reached', point._model.x, point._model.y - 10);
+                                // 绘制一个红色圆圈来标记阈值点
+                                ctx.beginPath();
+                                ctx.arc(point._model.x, point._model.y, 5, 0, 2 * Math.PI);
+                                ctx.fillStyle = 'red';
+                                ctx.fill();
+                            }
+                        });
+                    }
+                });
+            }
+
+            function getThreshold(selectedDataset) {
+                // 根据选择的数据集返回相应的阈值
+                switch(selectedDataset) {
+                    case 'mnist':
+                        return 0.89;
+                    case 'femnist':
+                        return 0.69;
+                    case 'fmnist':
+                        return 0.82;
+                    case 'synthetic':
+                        return 0.69;
+                    default:
+                        return 0;
+                }
+            }
+
+        </script>
+    </div>
+</body>
+
+</html>
+
+

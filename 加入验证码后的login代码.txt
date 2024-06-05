@@ -1,0 +1,429 @@
+<template scope>
+
+  <div style="display: flex">
+    <div style="flex: 1"></div>  <!----用于居中图片----->
+    <!----图片区域------->
+    <div class="avatar_box">
+      <img alt="Vue logo" src="../assets/logo.png">
+    </div>
+
+    <!----验证码登录------->
+    <div>
+      <Vcode :show="isShow" @success="success" @close="close" @fail='fail'></Vcode>
+      <button @click="submit">登录</button>
+    </div>
+
+    <!----表单区域---- <el-tag class="biaoqian">标签一</el-tag>--->
+    <el-form ref="loginFormRef"   label-width="80px"  class="login_form">
+      <el-form-item label="objectAddr:">
+        <el-input v-model="objectAddr"></el-input>
+      </el-form-item>
+
+      <el-form-item label="action:">
+        <el-input v-model="action" placeholder="read/ open/ close/ restart/ kill"></el-input>
+      </el-form-item>
+
+      <el-form-item label="ip:">
+        <el-input v-model="ip" :readonly="true"></el-input>
+      </el-form-item>
+
+      <!----按钮区域------->
+      <el-form-item class="btns">
+        <el-button type="primary" v-on:click="judgeBlackIP">访问</el-button>
+
+        <router-link to="/manage">
+        <el-button v-show="ChangeMode" type="primary" >权限管理</el-button>
+        </router-link>
+
+        <el-button v-show="!ChangeMode" type="info" @click="manage_code">管理</el-button>
+
+      </el-form-item>
+
+      <!----提示地址所属部门------->
+      <el-form class="biaoqian">
+        <el-tag v-if="objectAddr==='0xb4d18d483b641200Aa096558C9bA63aeb243002b'">输入地址：民航局</el-tag>
+        <el-tag v-if="objectAddr==='0xfF5d2fe96548E05E49C67FcC36C7dBecA2f501f2'">输入地址：航空公司</el-tag>
+        <el-tag v-if="objectAddr==='0xbE7186f383961Cc24Ad8012A2F2942667a72788F'">输入地址：地面保障单位</el-tag>
+      </el-form>
+
+      <router-view></router-view>
+
+    </el-form>
+
+    <div style="flex: 1"></div>
+
+    <!------检测是否安装Metamask账户--------->
+    <div><el-button type="primary" v-on:click="connectWallet">检测</el-button></div>
+
+
+  </div>
+
+</template>
+
+<script>
+/* 引入验证窗口插件 */
+import Vcode from "vue-puzzle-vcode";
+
+/* 合约初始化 */
+import { ethers } from 'ethers'
+const provider = new ethers.providers.Web3Provider(
+    ethereum,
+);
+const contractABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_objectAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "action",
+        "type": "string"
+      }
+    ],
+    "name": "accessControl",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "res",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "action",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "result",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "accessTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "AccessControlRet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "blockedUser",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "ToLB",
+        "type": "uint256"
+      }
+    ],
+    "name": "BlockUserInfo",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_deviceAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "right",
+        "type": "string"
+      }
+    ],
+    "name": "register4Right",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_subjectName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_ipAddr",
+        "type": "string"
+      }
+    ],
+    "name": "setSubjInfo",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "countGet",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "subjInfoMap",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "subjectAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "subjectName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "ipAddr",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
+
+export default {
+  components: {
+    Vcode
+  },
+
+  data() {
+    return {
+      address: "", //钱包地址
+      contractAddress:'0x01C3D6e903b69c0e8839fFf78C905192bd54502f',//要查询的合约的地址
+      signer:'',
+      objectAddr:'',//输入的设备地址
+
+      action:'',
+      ip: process.env.VUE_APP_HOST,  //显示本地电脑IP地址
+      a:0,//判断访问是否成功的标志
+      b:"name",//judgeBlackIP输入的无用参数
+      d:'',//judgeBlackIP输入的ip
+      ChangeMode:0,//管理员模式标志
+      right_address:0,//地址输入正确的标志
+
+      isShow: false, // 验证码模态框是否出现
+
+    }
+  },
+
+
+  methods: {
+    async connectWallet() {
+      const { ethereum } = window
+      if (ethereum === undefined){
+        alert("请安装小狐狸钱包")
+      } else{
+        [this.address] = await provider.send("eth_requestAccounts", []);
+        this.signer = provider.getSigner();
+        alert(this.address);
+      }
+    },
+    async judgeBlackIP(){
+      this.d=this.ip.toString()
+      const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+      );
+      const signer = provider.getSigner()
+      const ContractCounter = new ethers.Contract(this.contractAddress, contractABI, signer)
+      const Value0 = await ContractCounter.setSubjInfo(this.b,this.d);//调用合约函数
+      await Value0.wait()//等待函数调取完毕
+      await this.accessControl()//转到accessControl
+    },
+    async accessControl(){
+      const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+      );
+      const signer = provider.getSigner()
+      const ContractCounter = new ethers.Contract(this.contractAddress, contractABI, signer)
+      const Value1 = await ContractCounter.accessControl(this.objectAddr,this.action);//调用合约函数
+      await Value1.wait()//等待函数调取完毕
+      await this.countGet()//获取合约最终结果
+    },
+
+    async countGet(){
+      const provider = new ethers.providers.Web3Provider(
+          window.ethereum,
+      );
+      const signer = provider.getSigner()
+      const ContractCounter = new ethers.Contract(this.contractAddress, contractABI, signer)
+      let Value1 = await ContractCounter.countGet();//获取合约返回的状态数值
+      this.a = Value1.toNumber()
+      console.log(this.a);
+
+      if(this.a===50){  //访问成功
+        //alert('访问成功');   //alert是弹窗
+        this.open1();
+      }
+      else if(this.a===10){  //超过授权
+        this.open2();
+      }
+      else if(this.a===20){  //action不合法
+        this.open3();
+      }
+      else if(this.a===30){  //设备IP被列入黑名单
+        this.open4();
+      }
+      else if(this.a===40){  //设备地址被列入黑名单
+        this.open5();
+      }
+
+    },
+    open1() {
+      this.$message({
+        message: '访问成功',
+        type: 'success'
+      });
+    },
+    open2() {
+      this.$message({
+        message: '访问失败：行为等级超过授权',
+        type: 'error'
+      });
+    },
+    open3() {
+      this.$message({
+        message: 'action不合法',
+        type: 'error'
+      });
+    },
+    open4() {
+      this.$message({
+        message: '设备IP被列入黑名单',
+        type: 'error'
+      });
+    },
+    open5() {
+      this.$message({
+        message: '设备地址被列入黑名单',
+        type: 'error'
+      });
+    },
+
+    manage_code() {
+      this.$prompt('请输入密码', '进入管理员模式', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /123456/,
+        inputErrorMessage: '密码不正确'
+      }).then(({ value }) => {
+        this.ChangeMode=1,
+        this.$message({
+          type: 'success',
+          message: '已进入管理员模式',
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
+
+    //验证窗口
+    submit(){
+      this.isShow = true;
+    },
+    // 用户通过了验证
+    success(msg){
+      this.isShow = false; // 通过验证后，需要手动隐藏模态框
+      console.log('验证通过');
+    },
+    // 用户点击遮罩层，应该关闭模态框
+    close(){
+      this.isShow = false;
+    },
+    // 用户验证失败
+    fail(){
+      console.log('验证失败');
+    }
+
+
+
+
+  }
+}
+</script>
+
+
+
+
+<style lang="less" scoped>
+//图片风格
+.avatar_box {
+  width: 200px;
+  height: 200px;
+  img{
+    width: 100%;
+    height: 100%;
+  }
+}
+//表单风格
+.login_form{
+  position: absolute;
+  bottom: 20%;  //表单远离底部的程度
+  width: 40%;   //表单长度
+  padding-left: 26%;   //使表单右移
+}
+//按钮风格
+.btns{
+  display: flex;
+  justify-content: flex-end;//右对齐
+}
+//提示输入地址所属部门
+.biaoqian{
+  bottom: 20%;  //表单远离底部的程度
+  width: 50%;   //表单长度
+  padding-left: 40%;   //使表单右移
+}
+
+
+</style>

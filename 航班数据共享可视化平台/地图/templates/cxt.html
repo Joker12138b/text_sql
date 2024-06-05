@@ -1,0 +1,1248 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Chart Example</title>-->
+<!--    &lt;!&ndash; Include Chart.js and Chart.js Box and Violin Plot &ndash;&gt;-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot"></script>-->
+
+<!--    <style>-->
+<!--        canvas {-->
+<!--            max-width: 400px;-->
+<!--            max-height: 400px;-->
+<!--        }-->
+<!--        .charts-container {-->
+<!--            display: flex;-->
+<!--            width: 400px;-->
+<!--            height: 400px;-->
+<!--            justify-content: space-around;-->
+<!--            margin-top: 30px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h1 class="mt-5 mb-4 text-center">Federated Learning Visualization</h1>-->
+<!--    <div class="row justify-content-center">-->
+<!--        <div class="col-md-6">-->
+<!--            &lt;!&ndash; 数据集选择下拉菜单 &ndash;&gt;-->
+<!--            <div class="form-group">-->
+<!--                <label for="datasetSelect">选择数据集:</label>-->
+<!--                <select class="form-control" id="datasetSelect">-->
+<!--                    <option value="mnist">mnist</option>-->
+<!--                    <option value="femnist">femnist</option>-->
+<!--                    <option value="fmnist">fmnist</option>-->
+<!--                    <option value="synthetic">synthetic</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="charts-container" style="width: 500px; height: 500px;">-->
+<!--    <canvas id="lineChart"></canvas>-->
+<!--    <canvas id="boxPlot"></canvas>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    // 处理从后端获取的数据-->
+<!--    function fetchDataFromBackend(backendData) {-->
+<!--        const iterationCount = Array.from({ length: backendData[0].length }, (_, i) => i);-->
+
+<!--        return {-->
+<!--            labels: iterationCount,-->
+<!--            datasets: [-->
+<!--                {-->
+<!--                    label: "FedAVG",-->
+<!--                    data: backendData[0],-->
+<!--                    borderColor: "red",-->
+<!--                    fill: false-->
+<!--                },-->
+<!--                {-->
+<!--                    label: "FedSAE",-->
+<!--                    data: backendData[1],-->
+<!--                    borderColor: "blue",-->
+<!--                    fill: false-->
+<!--                },-->
+<!--                {-->
+<!--                    label: "FedProx",-->
+<!--                    data: backendData[2],-->
+<!--                    borderColor: "green",-->
+<!--                    fill: false-->
+<!--                },-->
+<!--                {-->
+<!--                    label: "NIPAFed",-->
+<!--                    data: backendData[3],-->
+<!--                    borderColor: "orange",-->
+<!--                    fill: false-->
+<!--                }-->
+<!--            ]-->
+<!--        };-->
+<!--    }-->
+
+<!--    // 创建线性图表-->
+<!--    let lineChart;-->
+<!--    function createLineChart(data) {-->
+<!--        const lineChartCtx = document.getElementById("lineChart").getContext("2d");-->
+<!--        lineChart = new Chart(lineChartCtx, {-->
+<!--            type: "line",-->
+<!--            data: data,-->
+<!--            options: {-->
+<!--                responsive: true,-->
+<!--                maintainAspectRatio: false,-->
+<!--                scales: {-->
+<!--                    xAxes: [{-->
+<!--                        scaleLabel: {-->
+<!--                            display: true,-->
+<!--                            labelString: 'Iteration Count'-->
+<!--                        }-->
+<!--                    }],-->
+<!--                    yAxes: [{-->
+<!--                        scaleLabel: {-->
+<!--                            display: true,-->
+<!--                            labelString: 'Y Label'-->
+<!--                        }-->
+<!--                    }]-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+
+<!--    // 创建箱型图-->
+<!--    // 创建箱型图-->
+<!--    let boxPlot;-->
+<!--    function createBoxPlot(data) {-->
+<!--        // 如果之前已经存在箱线图实例，销毁之前的实例-->
+<!--        if (boxPlot) {-->
+<!--            boxPlot.destroy();-->
+<!--        }-->
+
+<!--        // 创建新的箱线图实例-->
+<!--        const boxPlotCtx = document.getElementById("boxPlot").getContext("2d");-->
+<!--        boxPlot = new Chart(boxPlotCtx, {-->
+<!--            type: 'boxplot',-->
+<!--            data: {-->
+<!--                labels: ['Group 1', 'Group 2', 'Group 3', 'Group 4'],-->
+<!--                datasets: [-->
+<!--                    {-->
+<!--                        label: 'Data 1',-->
+<!--                        backgroundColor: 'rgba(255, 99, 132, 0.2)',-->
+<!--                        borderColor: 'rgba(255, 99, 132, 1)',-->
+<!--                        borderWidth: 1,-->
+<!--                        outlierColor: '#999999',-->
+<!--                        padding: 10,-->
+<!--                        data: data-->
+<!--                    }-->
+<!--                ]-->
+<!--            },-->
+<!--            options: {-->
+<!--                responsive: true,-->
+<!--                maintainAspectRatio: false,-->
+<!--                scales: {-->
+<!--                    xAxes: [{-->
+<!--                        scaleLabel: {-->
+<!--                            display: true,-->
+<!--                            labelString: 'X Label'-->
+<!--                        }-->
+<!--                    }],-->
+<!--                    yAxes: [{-->
+<!--                        scaleLabel: {-->
+<!--                            display: true,-->
+<!--                            labelString: 'Y Label'-->
+<!--                        }-->
+<!--                    }]-->
+<!--                }-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+
+
+
+<!--        // boxPlot = new Chart(boxPlotCtx, {-->
+<!--        //     type: 'boxplot', // 将类型设置为 'boxplot'-->
+<!--        //     data: {-->
+<!--        //         labels: ["FedAVG", "FedSAE", "FedProx", "NIPAFed"],-->
+<!--        //         datasets: [{-->
+<!--        //             label: 'Box Plot',-->
+<!--        //             backgroundColor: 'rgba(255, 206, 86, 0.2)',-->
+<!--        //             borderColor: 'rgba(255, 206, 86, 1)',-->
+<!--        //             borderWidth: 1,-->
+<!--        //             outlierColor: '#999999',-->
+<!--        //             padding: 10,-->
+<!--        //             data: data-->
+<!--        //         }]-->
+<!--        //     },-->
+<!--        //     options: {-->
+<!--        //         responsive: true,-->
+<!--        //         maintainAspectRatio: false,-->
+<!--        //         scales: {-->
+<!--        //             xAxes: [{-->
+<!--        //                 scaleLabel: {-->
+<!--        //                     display: true,-->
+<!--        //                     labelString: 'Algorithm' // 修改为适当的横坐标标签-->
+<!--        //                 }-->
+<!--        //             }],-->
+<!--        //             yAxes: [{-->
+<!--        //                 scaleLabel: {-->
+<!--        //                     display: true,-->
+<!--        //                     labelString: 'Y Label'-->
+<!--        //                 }-->
+<!--        //             }]-->
+<!--        //         }-->
+<!--        //     }-->
+<!--        // });-->
+
+
+<!--    Chart.register({-->
+<!--        id: 'boxplot',-->
+<!--        beforeInit: function(chart, options) {-->
+<!--            // 在此处定义箱线图控制器的实现细节-->
+<!--            // 例如：设置箱线图的样式、数据处理、交互配置、轴设置等-->
+<!--            chart.config.options.scales = {-->
+<!--                x: {-->
+<!--                    display: true,-->
+<!--                    title: {-->
+<!--                        display: true,-->
+<!--                        text: 'X Label'-->
+<!--                    }-->
+<!--                },-->
+<!--                y: {-->
+<!--                    display: true,-->
+<!--                    title: {-->
+<!--                        display: true,-->
+<!--                        text: 'Y Label'-->
+<!--                    }-->
+<!--                }-->
+<!--            };-->
+<!--        }-->
+<!--    });-->
+
+<!--    document.getElementById('datasetSelect').addEventListener('change', function() {-->
+<!--        const selectedDataset = this.value;-->
+
+<!--        fetch('/get_data?dataset=' + selectedDataset)-->
+<!--            .then(response => response.json())-->
+<!--            .then(data => {-->
+<!--                // 清除先前的图表-->
+<!--                if (lineChart) {-->
+<!--                    lineChart.destroy();-->
+<!--                }-->
+<!--                if (boxPlot) {-->
+<!--                    boxPlot.destroy();-->
+<!--                }-->
+
+<!--                const chartData = fetchDataFromBackend(data);-->
+
+<!--                // 创建新的图表-->
+<!--                createLineChart(chartData);-->
+<!--                // Chart.register(BoxPlotController);-->
+<!--                createBoxPlot(data);-->
+<!--            })-->
+<!--            .catch(error => console.error('Error fetching data:', error));-->
+<!--    });-->
+
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+<!--注册的之前的代码-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>注册</title>-->
+<!--    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    <style>-->
+
+<!-- li {list-style: none;}-->
+
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--            background-image: url(static/img/登录界面背景.jpg);-->
+<!--            background-repeat: no-repeat;-->
+<!--            /*这里的100% auto 表示将背景图片的长度100%显示，高度自适应*/-->
+<!--            background-size: 100% auto;-->
+<!--        }-->
+
+<!--        #maxbox {-->
+<!--            margin: 0 auto;-->
+<!--            margin-top: 200px;-->
+<!--            padding: 20px, 50px;-->
+<!--            /*这里的90表示以不透明度90%显示*/-->
+<!--            background-color: #00000090;-->
+<!--            text-align: center;-->
+<!--            width: 600px;-->
+<!--            height: 500px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        #maxbox h1 {-->
+<!--            padding: 0;-->
+<!--            padding-top: 60px;-->
+<!--            color: white;-->
+<!--            font-size: 30px;-->
+<!--            padding-bottom: 4px;-->
+<!--            border-bottom: solid 1px white;-->
+<!--        }-->
+
+<!--        #maxbox h2 {-->
+<!--            font-weight: 700;-->
+<!--            color:white;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox {-->
+<!--            margin-top: 30px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText span {-->
+<!--            color: white;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText input {-->
+<!--            border: 0;-->
+<!--            padding: 6px;-->
+<!--            border-bottom: 1px solid white;-->
+<!--            /*这里的00表示不透明度为0，即透明显示*/-->
+<!--            background-color: #FFFFFF00;-->
+<!--            color: white;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox .inputButton {-->
+<!--            margin: 0;-->
+<!--            border: 0;-->
+<!--            margin-top: 20px;-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            /*给这个按钮变为圆角边角*/-->
+<!--            border-radius: 25px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #sign_up {-->
+<!--            margin-top: 50px;-->
+<!--            color: white;-->
+<!--            font-size: 17px;-->
+<!--        }-->
+
+<!--        #sign_up a {-->
+<!--            color: #3498db;-->
+<!--        }-->
+<!--        .submitButton {-->
+<!--            margin-top: 20px;-->
+<!--            border-radius: 15px; /* 设置为按钮高度的一半，使按钮呈现椭圆形状 */-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--            border: none; /* 移除按钮的边框 */-->
+<!--        }-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            z-index: 1050; /* Ensure modal has a higher z-index */-->
+<!--            left: 0;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: auto;-->
+<!--            background-color: rgba(0, 0, 0, 0.4);-->
+<!--            padding-top: 60px;-->
+<!--        }-->
+
+<!--        .modal-content {-->
+<!--            background-color: #fefefe;-->
+<!--            margin: 5% auto;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #888;-->
+<!--            width: 80%;-->
+<!--            max-width: 300px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        .close {-->
+<!--            color: #aaa;-->
+<!--            float: right;-->
+<!--            font-size: 28px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .close:hover,-->
+<!--        .close:focus {-->
+<!--            color: black;-->
+<!--            text-decoration: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--    <div id="maxbox">-->
+<!--        <h1>用户信息注册</h1>-->
+<!--        <div class="inputbox">-->
+<!--            <form action="/register" method="post">-->
+<!--                <div class="inputbox">-->
+<!--                    <input class="username" type="text" placeholder="用户名" name="username" style="color:black"/>-->
+<!--                </div>-->
+
+<!--                <div class="inputbox">-->
+<!--                    <input class="password" placeholder="密    码" name="password" style="color:black"/>-->
+<!--                </div>-->
+<!--                <input class="submitButton" type="submit" value="提交"/>-->
+<!--                {{msg}}-->
+<!--    &lt;!&ndash;            <p id="message">{{msg}}</p>&ndash;&gt;-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div>-->
+<!--            <p>身份选择：-->
+<!--                <select id="role" name="role">-->
+<!--                    <option value="user">普通用户</option>-->
+<!--                    <option value="admin">管理员</option>-->
+<!--                </select>-->
+<!--            </p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div id="loginModal" class="modal fade" role="dialog">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                    <h4 class="modal-title">提示</h4>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <p id="modalMessage"></p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            $('#loginForm').on('submit', function (event) {-->
+<!--                event.preventDefault();-->
+<!--                var formData = $(this).serialize();-->
+<!--                $.ajax({-->
+<!--                    url: '/register',-->
+<!--                    type: 'POST',-->
+<!--                    data: formData,-->
+<!--                    success: function (response) {-->
+<!--                        $('#modalMessage').text(response.message);-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                        if (response.status === 'success') {-->
+<!--                            setTimeout(function () {-->
+<!--                                window.location.href = "/login";-->
+<!--                            }, 2000);-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        $('#modalMessage').text('注册失败');-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+
+<!--            // Explicitly close the modal on clicking close button-->
+<!--            $('.modal').on('click', '.close, .btn', function () {-->
+<!--                $('#loginModal').modal('hide');-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>注册</title>-->
+<!--    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    <style>-->
+<!--        li {list-style: none;}-->
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--            background-image: url(static/img/登录界面背景.jpg);-->
+<!--            background-repeat: no-repeat;-->
+<!--            background-size: 100% auto;-->
+<!--        }-->
+<!--        #maxbox {-->
+<!--            margin: 0 auto;-->
+<!--            margin-top: 200px;-->
+<!--            padding: 20px, 50px;-->
+<!--            background-color: #00000090;-->
+<!--            text-align: center;-->
+<!--            width: 600px;-->
+<!--            height: 500px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+<!--        #maxbox h1 {-->
+<!--            padding: 0;-->
+<!--            padding-top: 60px;-->
+<!--            color: white;-->
+<!--            font-size: 30px;-->
+<!--            padding-bottom: 4px;-->
+<!--            border-bottom: solid 1px white;-->
+<!--        }-->
+<!--        #maxbox h2 {-->
+<!--            font-weight: 700;-->
+<!--            color: white;-->
+<!--        }-->
+<!--        #maxbox .inputbox {-->
+<!--            margin-top: 30px;-->
+<!--        }-->
+<!--        #maxbox .inputText {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        #maxbox .inputText span {-->
+<!--            color: white;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+<!--        #maxbox .inputText input {-->
+<!--            border: 0;-->
+<!--            padding: 6px;-->
+<!--            border-bottom: 1px solid white;-->
+<!--            background-color: #FFFFFF00;-->
+<!--            color: white;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+<!--        #maxbox .inputbox .inputButton {-->
+<!--            margin: 0;-->
+<!--            border: 0;-->
+<!--            margin-top: 20px;-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            border-radius: 25px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+<!--        #sign_up {-->
+<!--            margin-top: 50px;-->
+<!--            color: white;-->
+<!--            font-size: 17px;-->
+<!--        }-->
+<!--        #sign_up a {-->
+<!--            color: #3498db;-->
+<!--        }-->
+<!--        .submitButton {-->
+<!--            margin-top: 20px;-->
+<!--            border-radius: 15px;-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--            border: none;-->
+<!--        }-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            z-index: 1050;-->
+<!--            left: 0;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: auto;-->
+<!--            background-color: rgba(0, 0, 0, 0.4);-->
+<!--            padding-top: 60px;-->
+<!--        }-->
+<!--        .modal-content {-->
+<!--            background-color: #fefefe;-->
+<!--            margin: 5% auto;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #888;-->
+<!--            width: 80%;-->
+<!--            max-width: 300px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+<!--        .close {-->
+<!--            color: #aaa;-->
+<!--            float: right;-->
+<!--            font-size: 28px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .close:hover,-->
+<!--        .close:focus {-->
+<!--            color: black;-->
+<!--            text-decoration: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <div id="maxbox">-->
+<!--        <h1>用户信息注册</h1>-->
+<!--        <div class="inputbox">-->
+<!--            <form id="registerForm" action="/register" method="post">-->
+<!--                <div class="inputbox">-->
+<!--                    <input class="username" type="text" placeholder="用户名" name="username" style="color:black" required/>-->
+<!--                </div>-->
+<!--                <div class="inputbox">-->
+<!--                    <input class="password" type="password" placeholder="密码" name="password" style="color:black" required/>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <p>身份选择：-->
+<!--                        <select id="role" name="role" required>-->
+<!--                            <option value="user">普通用户</option>-->
+<!--                            <option value="admin">管理员</option>-->
+<!--                        </select>-->
+<!--                    </p>-->
+<!--                </div>-->
+<!--                <input class="submitButton" type="submit" value="提交"/>-->
+<!--            </form>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div id="loginModal" class="modal fade" role="dialog">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                    <h4 class="modal-title">提示</h4>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <p id="modalMessage"></p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            $('#registerForm').on('submit', function (event) {-->
+<!--                event.preventDefault();-->
+<!--                var formData = $(this).serialize();-->
+<!--                $.ajax({-->
+<!--                    url: '/register',-->
+<!--                    type: 'POST',-->
+<!--                    data: formData,-->
+<!--                    success: function (response) {-->
+<!--                        $('#modalMessage').text(response.message);-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                        if (response.status === 'success') {-->
+<!--                            $('#loginModal').on('hidden.bs.modal', function () {-->
+<!--                                window.location.href = "/";-->
+<!--                            });-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        $('#modalMessage').text('注册失败');-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+
+<!--            // Explicitly close the modal on clicking close button-->
+<!--            $('.modal').on('click', '.close, .btn', function () {-->
+<!--                $('#loginModal').modal('hide');-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>注册</title>-->
+<!--    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    &lt;!&ndash; 这里添加你的自定义样式 &ndash;&gt;-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-color: #f8f9fa;-->
+<!--            background-image: url(static/img/登录界面背景.jpg);-->
+<!--            background-size: cover;-->
+<!--            background-position: center;-->
+<!--            font-family: Arial, sans-serif;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 400px;-->
+<!--            margin: 100px auto;-->
+<!--            padding: 20px;-->
+<!--            background-color: #fff;-->
+<!--            border-radius: 10px;-->
+<!--            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            text-align: center;-->
+<!--            color: #007bff;-->
+<!--            margin-bottom: 30px;-->
+<!--        }-->
+
+<!--        .form-group {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+
+<!--        label {-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        input[type="text"], input[type="password"] {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ced4da;-->
+<!--            border-radius: 5px;-->
+<!--        }-->
+
+<!--        select {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            border: 1px solid #ced4da;-->
+<!--            border-radius: 5px;-->
+<!--            background-color: #fff;-->
+<!--        }-->
+
+<!--        .submit-button {-->
+<!--            width: 100%;-->
+<!--            padding: 10px;-->
+<!--            border: none;-->
+<!--            border-radius: 5px;-->
+<!--            background-color: #007bff;-->
+<!--            color: #fff;-->
+<!--            font-size: 16px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        .submit-button:hover {-->
+<!--            background-color: #0056b3;-->
+<!--        }-->
+
+<!--        .message {-->
+<!--            text-align: center;-->
+<!--            color: #dc3545;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="container">-->
+<!--    <h1>用户信息注册</h1>-->
+<!--    <form id="registerForm" action="/register" method="post">-->
+<!--        <div class="form-group">-->
+<!--            <label for="username">用户名</label>-->
+<!--            <input type="text" id="username" name="username" required>-->
+<!--        </div>-->
+
+<!--        <div class="form-group">-->
+<!--            <label for="password">密码</label>-->
+<!--            <input type="password" id="password" name="password" required>-->
+<!--        </div>-->
+
+<!--        <div class="form-group">-->
+<!--            <label for="role">身份选择：</label>-->
+<!--            <select id="role" name="role">-->
+<!--                <option value="user">普通用户</option>-->
+<!--                <option value="admin">管理员</option>-->
+<!--            </select>-->
+<!--        </div>-->
+
+<!--        <button type="submit" class="submit-button">提交</button>-->
+
+<!--        <p class="message" id="message"></p>-->
+<!--    </form>-->
+<!--</div>-->
+
+<!--<script>-->
+<!--    $(document).ready(function () {-->
+<!--        $('#registerForm').on('submit', function (event) {-->
+<!--            event.preventDefault();-->
+<!--            var formData = $(this).serialize();-->
+<!--            $.ajax({-->
+<!--                url: '/register',-->
+<!--                type: 'POST',-->
+<!--                data: formData,-->
+<!--                success: function (response) {-->
+<!--                    $('#message').text(response.message);-->
+<!--                    if (response.status === 'success') {-->
+<!--                        // 注册成功后的操作-->
+<!--                    }-->
+<!--                },-->
+<!--                error: function () {-->
+<!--                    $('#message').text('注册失败');-->
+<!--                }-->
+<!--            });-->
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>注册</title>-->
+<!--    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    <style>-->
+
+<!--        li {list-style: none;}-->
+
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--            background-image: url(static/img/登录界面背景.jpg);-->
+<!--            background-repeat: no-repeat;-->
+<!--            /*这里的100% auto 表示将背景图片的长度100%显示，高度自适应*/-->
+<!--            background-size: 100% auto;-->
+<!--        }-->
+
+<!--        #maxbox {-->
+<!--            margin: 0 auto;-->
+<!--            margin-top: 200px;-->
+<!--            padding: 20px, 50px;-->
+<!--            /*这里的90表示以不透明度90%显示*/-->
+<!--            background-color: #00000090;-->
+<!--            text-align: center;-->
+<!--            width: 600px;-->
+<!--            height: 500px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        #maxbox h1 {-->
+<!--            padding: 0;-->
+<!--            padding-top: 60px;-->
+<!--            color: white;-->
+<!--            font-size: 30px;-->
+<!--            padding-bottom: 4px;-->
+<!--            border-bottom: solid 1px white;-->
+<!--        }-->
+
+<!--        #maxbox h2 {-->
+<!--            font-weight: 700;-->
+<!--            color:white;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox {-->
+<!--            margin-top: 30px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText span {-->
+<!--            color: white;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText input {-->
+<!--            border: 0;-->
+<!--            padding: 6px;-->
+<!--            border-bottom: 1px solid white;-->
+<!--            /*这里的00表示不透明度为0，即透明显示*/-->
+<!--            background-color: #FFFFFF00;-->
+<!--            color: white;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox .inputButton {-->
+<!--            margin: 0;-->
+<!--            border: 0;-->
+<!--            margin-top: 20px;-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            /*给这个按钮变为圆角边角*/-->
+<!--            border-radius: 25px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #sign_up {-->
+<!--            margin-top: 50px;-->
+<!--            color: white;-->
+<!--            font-size: 17px;-->
+<!--        }-->
+
+<!--        #sign_up a {-->
+<!--            color: #3498db;-->
+<!--        }-->
+<!--        .submitButton {-->
+<!--            margin-top: 20px;-->
+<!--            border-radius: 15px; /* 设置为按钮高度的一半，使按钮呈现椭圆形状 */-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--            border: none; /* 移除按钮的边框 */-->
+<!--        }-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            z-index: 1050; /* Ensure modal has a higher z-index */-->
+<!--            left: 0;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: auto;-->
+<!--            background-color: rgba(0, 0, 0, 0.4);-->
+<!--            padding-top: 60px;-->
+<!--        }-->
+
+<!--        .modal-content {-->
+<!--            background-color: #fefefe;-->
+<!--            margin: 5% auto;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #888;-->
+<!--            width: 80%;-->
+<!--            max-width: 300px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        .close {-->
+<!--            color: #aaa;-->
+<!--            float: right;-->
+<!--            font-size: 28px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .close:hover,-->
+<!--        .close:focus {-->
+<!--            color: black;-->
+<!--            text-decoration: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+<!--    <div id="maxbox">-->
+<!--        <h1>用户信息注册</h1>-->
+<!--        <div class="inputbox">-->
+<!--            <form id="loginFrom" action="/register" method="post">-->
+<!--                <div class="inputbox">-->
+<!--                    <input class="username" type="text" placeholder="用户名" name="username" style="color:black"/>-->
+<!--                </div>-->
+
+<!--                <div class="inputbox">-->
+<!--                    <input class="password" placeholder="密    码" name="password" style="color:black"/>-->
+<!--                </div>-->
+<!--                <input class="submitButton" type="submit" value="提交"/>-->
+<!--                {{msg}}-->
+<!--    &lt;!&ndash;            <p id="message">{{msg}}</p>&ndash;&gt;-->
+<!--            </form>-->
+<!--        </div>-->
+<!--        <div style="margin-top: 20px;">-->
+<!--            <p>身份选择：-->
+<!--                <select id="role" name="role">-->
+<!--                    <option value="user">普通用户</option>-->
+<!--                    <option value="admin">管理员</option>-->
+<!--                </select>-->
+<!--            </p>-->
+<!--        </div>-->
+<!--        <div id="loginModal" class="modal fade" role="dialog">-->
+<!--            <div class="modal-dialog">-->
+<!--                <div class="modal-content">-->
+<!--                    <div class="modal-header">-->
+<!--                        <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                        <h4 class="modal-title">提示</h4>-->
+<!--                    </div>-->
+<!--                    <div class="modal-body">-->
+<!--                        <p id="modalMessage"></p>-->
+<!--                    </div>-->
+<!--                    <div class="modal-footer">-->
+<!--                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            $('#loginForm').on('submit', function (event) {-->
+<!--                event.preventDefault();-->
+<!--                var formData = $(this).serialize();-->
+<!--                $.ajax({-->
+<!--                    url: '/register',-->
+<!--                    type: 'POST',-->
+<!--                    data: formData,-->
+<!--                    success: function (response) {-->
+<!--                        $('#modalMessage').text(response.message);-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                        if (response.status === 'success') {-->
+<!--                            $('#loginModal').on('hidden.bs.modal', function () {-->
+<!--                                window.location.href = "/login";-->
+<!--                            });-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        $('#modalMessage').text('注册失败');-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+
+<!--            // Explicitly close the modal on clicking close button-->
+<!--            $('.modal').on('click', '.close, .btn', function () {-->
+<!--                $('#loginModal').modal('hide');-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<!--登陆的之前代码-->
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+
+<!--<head>-->
+<!--    <meta charset="utf-8" />-->
+<!--    <title>登陆界面</title>-->
+<!--    <link rel="icon" href="http://v3.bootcss.com/favicon.ico">-->
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+<!--    <style>-->
+
+<!--    li {list-style: none;}-->
+
+<!--        body {-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--            box-sizing: border-box;-->
+<!--            background-image: url(static/img/空中.jpg);-->
+<!--            /* background-image: url(/static/img/空中.jpg); */-->
+<!--            background-repeat: no-repeat;-->
+<!--            /*这里的100% auto 表示将背景图片的长度100%显示，高度自适应*/-->
+<!--            background-size: 100% auto;-->
+<!--        }-->
+
+<!--        #maxbox {-->
+<!--            margin: 0 auto;-->
+<!--            margin-top: 200px;-->
+<!--            padding: 20px, 50px;-->
+<!--            /*这里的90表示以不透明度90%显示*/-->
+<!--            background-color: #00000090;-->
+<!--            text-align: center;-->
+<!--            width: 600px;-->
+<!--            height: 500px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        #maxbox h1 {-->
+<!--            padding: 0;-->
+<!--            padding-top: 60px;-->
+<!--            color: white;-->
+<!--            font-size: 30px;-->
+<!--            padding-bottom: 4px;-->
+<!--            border-bottom: solid 1px white;-->
+<!--        }-->
+
+<!--        #maxbox h2 {-->
+<!--            font-weight: 700;-->
+<!--            color:white;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox {-->
+<!--            margin-top: 30px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText span {-->
+<!--            color: white;-->
+<!--            font-size: 18px;-->
+<!--        }-->
+
+<!--        #maxbox .inputText input {-->
+<!--            border: 0;-->
+<!--            padding: 6px;-->
+<!--            border-bottom: 1px solid white;-->
+<!--            /*这里的00表示不透明度为0，即透明显示*/-->
+<!--            background-color: #FFFFFF00;-->
+<!--            color: white;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #maxbox .inputbox .inputButton {-->
+<!--            margin: 0;-->
+<!--            border: 0;-->
+<!--            margin-top: 20px;-->
+<!--            width: 100px;-->
+<!--            height: 30px;-->
+<!--            /*给这个按钮变为圆角边角*/-->
+<!--            border-radius: 25px;-->
+<!--            color: white;-->
+<!--            background-color: #3498db;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+
+<!--        #sign_up {-->
+<!--            margin-top: 50px;-->
+<!--            color: white;-->
+<!--            font-size: 17px;-->
+<!--        }-->
+
+<!--        #sign_up a {-->
+<!--            color: #3498db;-->
+<!--        }-->
+<!--        .modal {-->
+<!--            display: none;-->
+<!--            position: fixed;-->
+<!--            z-index: 1;-->
+<!--            left: 0;-->
+<!--            top: 0;-->
+<!--            width: 100%;-->
+<!--            height: 100%;-->
+<!--            overflow: auto;-->
+<!--            background-color: rgb(0, 0, 0);-->
+<!--            background-color: rgba(0, 0, 0, 0.4);-->
+<!--            padding-top: 60px;-->
+<!--        }-->
+
+<!--        .modal-content {-->
+<!--            background-color-co: #fefefe;-->
+<!--            margin: 5% auto;-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #888;-->
+<!--            width: 80%;-->
+<!--            max-width: 300px;-->
+<!--            border-radius: 10px;-->
+<!--        }-->
+
+<!--        .close {-->
+<!--            color: #aaa;-->
+<!--            float: right;-->
+<!--            font-size: 28px;-->
+<!--            font-weight: bold;-->
+<!--        }-->
+
+<!--        .close:hover,-->
+<!--        .close:focus {-->
+<!--            color: black;-->
+<!--            text-decoration: none;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--    </style>-->
+<!--&lt;!&ndash;    <script>&ndash;&gt;-->
+<!--&lt;!&ndash;        function showModal(message) {&ndash;&gt;-->
+<!--&lt;!&ndash;            var modal = document.getElementById("myModal");&ndash;&gt;-->
+<!--&lt;!&ndash;            var modalMessage = document.getElementById("modalMessage");&ndash;&gt;-->
+<!--&lt;!&ndash;            modalMessage.textContent = message;&ndash;&gt;-->
+<!--&lt;!&ndash;            modal.style.display = "block";&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        function closeModal() {&ndash;&gt;-->
+<!--&lt;!&ndash;            var modal = document.getElementById("myModal");&ndash;&gt;-->
+<!--&lt;!&ndash;            modal.style.display = "none";&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+
+<!--&lt;!&ndash;        window.onclick = function(event) {&ndash;&gt;-->
+<!--&lt;!&ndash;            var modal = document.getElementById("myModal");&ndash;&gt;-->
+<!--&lt;!&ndash;            if (event.target == modal) {&ndash;&gt;-->
+<!--&lt;!&ndash;                modal.style.display = "none";&ndash;&gt;-->
+<!--&lt;!&ndash;            }&ndash;&gt;-->
+<!--&lt;!&ndash;        }&ndash;&gt;-->
+<!--&lt;!&ndash;    </script>&ndash;&gt;-->
+<!--</head>-->
+
+<!--<body>-->
+<!--    <div id="maxbox">-->
+<!--        <h1>航班运行数据共享可视化平台</h1>-->
+<!--        <h2>用户登录</h2>-->
+<!--        <div class="inputbox">-->
+<!--&lt;!&ndash;            <form name="frm" action="" method="post">&ndash;&gt;-->
+<!--            <form id="loginForm" action="/login" method="post">-->
+<!--                <div class="inputText">-->
+<!--                    <span class="iconfont icon-mine"></span>-->
+<!--                    <input class="username" type="text" placeholder="用户名" name="username" style="color:white" required />-->
+<!--                </div>-->
+<!--                <div class="inputText">-->
+<!--                    <span class="iconfont icon-lock"></span>-->
+<!--                    <input type="password" placeholder="密    码" name="password" style="color:white" required />-->
+<!--                    <br>-->
+<!--                    <input class="remember" name="remember" type="checkbox" value="" checked="checked">-->
+<!--                    <span style="color:rgb(255, 255, 255)">记住我</span>-->
+<!--                </div>-->
+<!--                <input class="inputButton" type="submit" value="登录" />-->
+<!--                {{msg}}-->
+<!--            </form>-->
+<!--            </div>-->
+<!--            <div id="sign_up">-->
+<!--            <p>还没有账号？<a href="register">立即注册</a></p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div id="loginModal" class="modal fade" role="dialog">-->
+<!--        <div class="modal-dialog">-->
+<!--            <div class="modal-content">-->
+<!--                <div class="modal-header">-->
+<!--                    <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+<!--                    <h4 class="modal-title">提示</h4>-->
+<!--                </div>-->
+<!--                <div class="modal-body">-->
+<!--                    <p id="modalMessage"></p>-->
+<!--                </div>-->
+<!--                <div class="modal-footer">-->
+<!--                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            $('#loginForm').on('submit', function (event) {-->
+<!--                event.preventDefault();-->
+<!--                var formData = $(this).serialize();-->
+<!--                $.ajax({-->
+<!--                    url: '/login',-->
+<!--                    type: 'POST',-->
+<!--                    data: formData,-->
+<!--                    success: function (response) {-->
+<!--                        $('#modalMessage').text(response.message);-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                        if (response.status === 'success') {-->
+<!--                            setTimeout(function () {-->
+<!--                                window.location.href = "/index";-->
+<!--                            }, 2000);-->
+<!--                        }-->
+<!--                    },-->
+<!--                    error: function () {-->
+<!--                        $('#modalMessage').text('登录失败，请重试。');-->
+<!--                        $('#loginModal').modal('show');-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
+<!--</body>-->
+
+<!--</html>-->
